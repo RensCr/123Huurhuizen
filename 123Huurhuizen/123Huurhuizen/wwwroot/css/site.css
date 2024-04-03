@@ -40,3 +40,9 @@ body {
 .font-weight-bold {
     font-weight: 500; /* Pas deze waarde aan om de gewenste vetgedrukte stijl te krijgen */
 }
+.btn:focus,
+.btn:active {
+    box-shadow: none !important;
+}
+
+
