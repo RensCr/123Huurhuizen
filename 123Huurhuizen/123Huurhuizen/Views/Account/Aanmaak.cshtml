@@ -32,34 +32,38 @@
     </nav>
 </header>
 <div class="container">
-    <div class="row justify-content-center mt-5">
+    <div class="row justify-content-center ">
         <div class="col-md-6 form-container">
-            <form>
+            <form method="post" action="@Url.Action("Aanmaak", "Account")">
                 <div style="text-align:center">
                     <h5>Maak account aan</h5>
                 </div>
                 <div class="mb-3" style="margin-top:auto">
-                    <label for="mail" class="form-label">E-mailadress</label>
-                    <input type="text" class="form-control" id="mail" name="mail" required>
+                    <label for="mail" class="form-label">Naam</label>
+                    <input type="text" class="form-control" id="mail" name="name" required>
                 </div>
                 <div class="mb-3 position-relative" >
+                    <label for="mail" class="form-label">E-mailadres</label>
+                    <input type="text" class="form-control" id="mail" name="email" required>
+                </div>
+                <div class="mb-3 position-relative">
                     <label for="password" class="form-label">Wachtwoord</label>
                     <div class="input-group">
                         <input type="password" class="form-control" id="password" name="password" required>
                     </div>
                 </div>
                 <div class="mb-3 position-relative" style="width: 85%">
-                    <label for="password" class="form-label">Herhaal wachtwoord</label>
+                    <label for="password1" class="form-label">Herhaal wachtwoord</label>
                     <div class="input-group">
-                        <input type="password" class="form-control" id="password1" name="password" required>
+                        <input type="password" class="form-control" id="password1" name="repeatedpassword" required>
                         <span class="input-group-text password-toggle-icon" id="togglePassword1">
                             <i class="fas fa-eye-slash"></i>
                         </span>
                     </div>
                 </div>
-
                 <button type="submit" class="btn custom-btn btn-block">Aanmaken</button>
             </form>
+
         </div>
     </div>
 </div>
