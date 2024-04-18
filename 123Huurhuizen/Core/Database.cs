@@ -22,12 +22,12 @@ namespace Core
             Console.WriteLine(builder.ToString());
             return builder.ToString();
         }
-        public bool AddAccount(string name,string email, string hashedPassword) 
+        public bool AddAccount(string name,string email, string hashedPassword,bool doesUserWantToSell,bool? companyRent) 
         {
             try
             {
                 Data.Database database = new Data.Database();
-                database.CreateAccount(name,email, hashedPassword);
+                database.CreateAccount(name,email, hashedPassword, doesUserWantToSell,companyRent);
                 return true;
             }
             catch (Exception)

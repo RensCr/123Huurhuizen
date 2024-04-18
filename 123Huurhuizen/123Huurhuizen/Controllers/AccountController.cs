@@ -18,15 +18,15 @@ namespace _123Huurhuizen.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Aanmaak(string name,string email, string password, string repeatedpassword)
+        public IActionResult Aanmaak(string name,string email, string password, string repeatedpassword,bool checkboxForRent, bool? companyRent)
         {
             if (password == repeatedpassword)
             {
                 Database database = new();
                 string hashedPassword = database.HashPassword(password);
                 try
-                {
-                    database.AddAccount(name,email, hashedPassword);
+                { 
+                    database.AddAccount(name,email, hashedPassword, checkboxForRent,companyRent);
                 }
                 catch (Exception ex) { }
 
