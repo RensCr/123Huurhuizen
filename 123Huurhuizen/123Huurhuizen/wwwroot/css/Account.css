@@ -27,3 +27,13 @@
 .btn:active {
     box-shadow: none !important;
 }
+
+body {
+    overflow: hidden;
+}
+
+.container {
+    overflow-y: auto;
+    max-height: 100vh;
+}
+
