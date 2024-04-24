@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Core;
+using Dal;
+using Logic.interfaces;
+using Logic;
 
 namespace _123Huurhuizen.Controllers
 {
@@ -22,11 +24,12 @@ namespace _123Huurhuizen.Controllers
         {
             if (password == repeatedpassword)
             {
-                Database database = new();
-                string hashedPassword = database.HashPassword(password);
+                IUserDB userDB = new UserDB();
+                Account account = new Account();
+                string hashedPassword = account.HashPassword(password);
                 try
-                { 
-                    database.AddAccount(name,email, hashedPassword, checkboxForRent,companyRent);
+                {
+                    account.AddAccount(name,email, hashedPassword, checkboxForRent,companyRent,userDB);
                 }
                 catch (Exception ex) { }
 
