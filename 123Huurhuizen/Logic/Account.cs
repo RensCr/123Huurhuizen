@@ -23,7 +23,7 @@ namespace Logic
             Console.WriteLine(builder.ToString());
             return builder.ToString();
         }
-        public bool AddAccount(string name, string email, string hashedPassword, bool doesUserWantToSell, bool? companyRent,IUserDB userDB)
+        public bool AddAccount(string name, string email, string hashedPassword, bool doesUserWantToSell, bool? companyRent,IUserRepository userDB)
         {
             try 
             {            
@@ -35,5 +35,20 @@ namespace Logic
                 return false;
             }
         }
+        public bool IsValidUser(string email, string hashedPassword, IUserRepository userDB,out int userId)
+        {
+            if (userDB.CheckIfUserExist(email, hashedPassword,out int user))
+            {
+                userId = user;
+                return true;
+            }
+            else
+            {
+                userId = -1;
+                return false;
+            }
+
+        }
+
     }
 }

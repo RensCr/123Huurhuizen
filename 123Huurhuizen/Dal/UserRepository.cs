@@ -8,7 +8,7 @@ using Logic.interfaces;
 
 namespace Dal
 {
-    public class UserDB : IUserDB
+    public class UserRepository : IUserRepository
     {
         private string constring = "Server=127.0.0.1;Port=3306;Database=123huizen;Uid=root;";
         public bool CreateAccount(string name, string email, string hashedPassword, bool doesUserWantToSell, bool? companyRent)
@@ -50,5 +50,32 @@ namespace Dal
             }
 
         }
+        public bool CheckIfUserExist(string email, string hashedPassword, out int userId)
+        {
+            MySqlConnection connection = new MySqlConnection(constring);
+            try
+            {
+                connection.Open();
+                string CheckUserExistQuery = $"SELECT COUNT(*) as number, Id FROM user WHERE email = '{email}' AND passwordHash = '{hashedPassword}';";
+                MySqlCommand mySqlCommand = new MySqlCommand(CheckUserExistQuery, connection);
+                MySqlDataReader reader = mySqlCommand.ExecuteReader();
+
+
+                while (reader.Read())
+                {
+                    int count = Convert.ToInt32(reader["number"]);
+                    if (count > 0)
+                    {
+                        userId = reader.GetInt32(1);
+                        return true;
+                    }
+                }
+
+            }
+            finally { connection.Close(); }
+            userId = -1;
+            return false;
+        }
+
     }
 }
