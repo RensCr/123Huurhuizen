@@ -1,13 +1,31 @@
-﻿@{
+﻿@model HouseViewModel
+@{
     ViewData["Title"] = "123Huurhuizen";
 }
 
 <div class="text-center">
     <div class="container">
-        <!-- Voeg de margin-bottom toe aan de rij -->
-        <a href="#" class="btn btn-primary plus-btn"><i class="fas fa-plus"></i></a>
+        <!-- Add margin-bottom to the row -->
+        <a asp-controller="Home" asp-action="AddHouse" class="btn btn-primary plus-btn"><i class="fas fa-plus"></i></a>
         <div class="row mb-4">
-            <div class="col-md-3">
+            @for (int i = 0; i < Model.HousePhotos.Count; i++)
+            {
+                <div class="col-md-3">
+                    <div class="card bg-light">
+                        <img src="@Model.HousePhotos[i].PhotoLink" class="card-img-top" alt="House Photo">
+                        <div class="card-body">
+                            <h4 class="card-title text-center">@Model.RentPerMonth[i] € per maand</h4>
+                            <h5 class="card-title text-center">Informatie</h5>
+                            <h6 class="card-text">Beschikbaar vanaf: @Model.AvailableAt[i]</h6>
+                            <p class="card-text font-weight-bold">@Model.SortRenter[i]</p>
+                            <hr>
+                            <a href="#" class="btn custom-btn btn-block">Meer informatie</a>
+                        </div>
+                    </div>
+                </div>
+            }
+
+@*             <div class="col-md-3">
                 <div class="card bg-light">
                     <img src="~/Images/testhuis.jpg" class="card-img-top" alt="Foto 1">
                     <div class="card-body">
@@ -71,7 +89,7 @@
                         <a href="#" class="btn custom-btn btn-block">Meer informatie</a>
                     </div>
                 </div>
-            </div>
+            </div> *@
         </div>
     </div>
 </div>

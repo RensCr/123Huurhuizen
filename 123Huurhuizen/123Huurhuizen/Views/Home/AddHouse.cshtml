@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1>Voer gegevens in:</h1>
-    <form onsubmit="return validateForm()" enctype="multipart/form-data">
+    <form enctype="multipart/form-data" asp-controller="Home" asp-action="AddHouse">
         <label for="location">Locatie:</label>
         <input type="text" id="location" name="location" required><br><br>
 
@@ -18,11 +18,15 @@
         <input type="date" id="date" name="date" required><br><br>
 
         <label for="price">Prijs:</label>
-        <input type="text" id="price" name="price"><br><br>
+        <input type="number" id="price" name="price" step="0.01" required><span>€</span><br><br>
+
+        <label for="information">Aanvullende informatie:</label>
+        <textarea id="information" name="information" rows="4" cols="50"></textarea><br><br>
 
         <!-- Bestandsinvoerveld voor het uploaden van één foto -->
-        <label for="photo">Foto uploaden:</label>
-        <input type="file" id="photo" name="photo" accept=".png, .jpg" onchange="displaySelectedFile(this.files[0])"><br><br>
+        <label for="photos">Foto uploaden:</label>
+        <input type="file" id="photos" name="photos" accept=".png, .jpg" multiple onchange="displaySelectedFile(this.files)">
+
 
         <!-- Container voor weergave van geselecteerde foto's -->
         <div id="selectedFiles"></div><br><br>
@@ -40,44 +44,27 @@
             }
 
             // Tijdstip instellen op het huidige tijdstip
-            var currentTime = new Date();
-            document.getElementById("time").value = currentTime.toISOString(); // Zet de tijd in ISO-formaat
-
-            // Datumbeperking: minimaal vandaag
-            var dateInput = document.getElementById("date");
-            dateInput.min = currentTime.toISOString().split("T")[0]; // Alleen de datum, geen tijd
+            document.getElementById('date').addEventListener('change', function () {
+                var inputDate = new Date(this.value); // Convert input value to Date object
+                var formattedDate = inputDate.toISOString().split('T')[0]; // Extract only the date part
+                console.log(formattedDate); // Output the formatted date (YYYY-MM-DD)
+            });
 
             return true;
         }
 
         // JavaScript om de geselecteerde foto weer te geven
-        function displaySelectedFile(file) {
+        function displaySelectedFile(files) {
             var selectedFilesDiv = document.getElementById("selectedFiles");
-            var fileName = file.name;
-            var fileExtension = fileName.split('.').pop(); // krijg de bestandsextensie
+            selectedFilesDiv.innerHTML = ''; // Clear the div before adding new files
 
-            // Controleer of de extensie geldig is
-            if (fileExtension !== 'png' && fileExtension !== 'jpg') {
-                alert("Alleen .png en .jpg bestanden zijn toegestaan.");
-                return;
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                var fileName = file.name;
+                var fileElement = document.createElement("p");
+                fileElement.textContent = fileName;
+                selectedFilesDiv.appendChild(fileElement);
             }
-
-            // Maak een paragrafelement om de bestandsnaam weer te geven
-            var fileElement = document.createElement("p");
-            fileElement.textContent = fileName;
-
-            // Voeg een 'x' toe om de foto te verwijderen
-            var removeButton = document.createElement("button");
-            removeButton.textContent = "x";
-            removeButton.onclick = function () {
-                selectedFilesDiv.removeChild(fileElement);
-            };
-
-            // Voeg het 'x'-knopje toe aan het paragrafelement
-            fileElement.appendChild(removeButton);
-
-            // Voeg het paragrafelement toe aan de container voor geselecteerde foto's
-            selectedFilesDiv.appendChild(fileElement);
         }
     </script>
 </body>

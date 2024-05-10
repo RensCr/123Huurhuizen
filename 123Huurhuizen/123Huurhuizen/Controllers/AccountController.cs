@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Logic.models;
 
 namespace _123Huurhuizen.Controllers
 {
@@ -67,10 +68,12 @@ namespace _123Huurhuizen.Controllers
             {
                 IUserRepository userDB = new UserRepository();
                 Account account = new Account();
+                
                 string hashedPassword = account.HashPassword(password);
                 try
                 {
-                    account.AddAccount(name,email, hashedPassword, checkboxForRent,companyRent,userDB);
+                    User user = new User(name, email, hashedPassword, checkboxForRent, companyRent);
+                    account.AddAccount(user,userDB);
                 }
                 catch (Exception ex) { }
 

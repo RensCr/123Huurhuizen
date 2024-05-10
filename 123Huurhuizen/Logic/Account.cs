@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 using Logic.interfaces;
+using Logic.models;
 
 namespace Logic
 {
@@ -23,11 +24,11 @@ namespace Logic
             Console.WriteLine(builder.ToString());
             return builder.ToString();
         }
-        public bool AddAccount(string name, string email, string hashedPassword, bool doesUserWantToSell, bool? companyRent,IUserRepository userDB)
+        public bool AddAccount(User user, IUserRepository userDB)
         {
             try 
-            {            
-                userDB.CreateAccount(name, email, hashedPassword, doesUserWantToSell, companyRent);
+            {
+                userDB.CreateAccount(user);
                 return true;
             }
             catch (Exception)

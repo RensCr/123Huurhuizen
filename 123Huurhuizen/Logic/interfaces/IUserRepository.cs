@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Logic.models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace Logic.interfaces
 {
     public interface IUserRepository
     {
-        public bool CreateAccount(string name, string email, string hashedPassword, bool doesUserWantToSell, bool? companyRent);
+        public bool CreateAccount(User user);
         public bool CheckIfUserExist(string name, string hashedPassword, out int userId);
     }
 }
