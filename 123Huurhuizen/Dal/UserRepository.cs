@@ -5,30 +5,31 @@ using System.Text;
 using System.Threading.Tasks;
 using MySqlConnector;
 using Logic.interfaces;
+using Logic.models;
 
 namespace Dal
 {
     public class UserRepository : IUserRepository
     {
         private string constring = "Server=127.0.0.1;Port=3306;Database=123huizen;Uid=root;";
-        public bool CreateAccount(string name, string email, string hashedPassword, bool doesUserWantToSell, bool? companyRent)
+        public bool CreateAccount(User user)
         {
             MySqlConnection connection = new MySqlConnection(constring);
             try
             {
                 connection.Open();
-                if (doesUserWantToSell)
+                if (user.DoesUserWantToSell)
                 {
-                    if (companyRent == true)
+                    if (user.CompanyRent == true)
                     {
-                        string UserSellQuery = $"INSERT INTO user (name, email, passwordhash, typeuser,typeseller) VALUES ('{name}', '{email}', '{hashedPassword}', 'Seller','Company');";
+                        string UserSellQuery = $"INSERT INTO user (name, email, passwordhash, typeuser,typeseller) VALUES ('{user.Name}', '{user.Email}', '{user.HashedPassword}', 'Seller','Company');";
                         MySqlCommand UserSellCommand = new MySqlCommand(UserSellQuery, connection);
                         UserSellCommand.ExecuteNonQuery();
                         return true;
                     }
                     else
                     {
-                        string UserSellQuery = $"INSERT INTO user (name, email, passwordhash, typeuser,typeseller) VALUES ('{name}', '{email}', '{hashedPassword}', 'Seller', 'Personal');";
+                        string UserSellQuery = $"INSERT INTO user (name, email, passwordhash, typeuser,typeseller) VALUES ('{user.Name}', '{user.Email}', '{user.HashedPassword}', 'Seller', 'Personal');";
                         MySqlCommand UserSellCommand = new MySqlCommand(UserSellQuery, connection);
                         UserSellCommand.ExecuteNonQuery();
                         return true;
@@ -37,7 +38,7 @@ namespace Dal
                 }
                 else
                 {
-                    string UserRentQuery = $"INSERT INTO user (name, email, passwordhash, typeuser) VALUES ('{name}', '{email}', '{hashedPassword}', 'Renter');";
+                    string UserRentQuery = $"INSERT INTO user (name, email, passwordhash, typeuser) VALUES ('{user.Name}', '{user.Email}', '{user.HashedPassword}', 'Renter');";
                     MySqlCommand UserRentcommand = new MySqlCommand(UserRentQuery, connection);
                     UserRentcommand.ExecuteNonQuery();
                     return true;
