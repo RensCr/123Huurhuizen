@@ -8,11 +8,15 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Logic.models;
+using _123Huurhuizen.Models;
 
 namespace _123Huurhuizen.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly ILogger<HomeController> _logger;
+        private readonly Logincheck
+            logincheck = new(); //Make sure to use this in all Http methods to check if the user is logged in
         public IActionResult Index()
         {
             return View();
@@ -55,8 +59,11 @@ namespace _123Huurhuizen.Controllers
                     Expires = DateTime.UtcNow.AddDays(expirationTime),
                     HttpOnly = true //Cookie can only be found in an http request
                 });
-
-                return View("~/Views/Home/Index.cshtml");
+                IHouseRepository houseRepository = new HouseRepository();
+                List<House> houses = houseRepository.GetAllHouses();
+                
+                ViewBag.SellerId = userId;
+                return View("~/Views/Home/Index.cshtml", new HouseViewModel(houses));
             }
             return View();
         }

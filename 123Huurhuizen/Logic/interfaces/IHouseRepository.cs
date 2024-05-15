@@ -11,9 +11,8 @@ namespace Logic.interfaces
     {
         public int AddHouse(HouseInformation house);
         public bool AddHousePictures(int HouseId, List<string> Photolinks);
-        public List<Photo> GetFirstHousePicture();
-        public List<double> GetRentPricePerMonth();
-        public List<string> GetStartRentedDays();
-        public List<string> GetSortRenter();
+        public List<House> GetAllHouses();
+        public bool DeleteHouse(int houseId);
+        public bool UpdateHouse(int houseId, double rentPerMonth, DateTime availableAt);
     }
 }
