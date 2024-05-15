@@ -3,93 +3,132 @@
     ViewData["Title"] = "123Huurhuizen";
 }
 
+
+
 <div class="text-center">
     <div class="container">
         <!-- Add margin-bottom to the row -->
         <a asp-controller="Home" asp-action="AddHouse" class="btn btn-primary plus-btn"><i class="fas fa-plus"></i></a>
         <div class="row mb-4">
-            @for (int i = 0; i < Model.HousePhotos.Count; i++)
+            @foreach (var house in Model.houses)
             {
                 <div class="col-md-3">
                     <div class="card bg-light">
-                        <img src="@Model.HousePhotos[i].PhotoLink" class="card-img-top" alt="House Photo">
+                        <img src="@house.HousePhotos.FirstOrDefault()?.PhotoLink" class="card-img-top" alt="House Photo" style="max-width: 300px; max-height: 200px;">
                         <div class="card-body">
-                            <h4 class="card-title text-center">@Model.RentPerMonth[i] € per maand</h4>
+                            <h4 class="card-title text-center">@house.RentPerMonth € per maand</h4>
                             <h5 class="card-title text-center">Informatie</h5>
-                            <h6 class="card-text">Beschikbaar vanaf: @Model.AvailableAt[i]</h6>
-                            <p class="card-text font-weight-bold">@Model.SortRenter[i]</p>
-                            <hr>
-                            <a href="#" class="btn custom-btn btn-block">Meer informatie</a>
+                            <h6 class="card-text">Beschikbaar vanaf: @house.AvailableAt</h6>
+                            <p class="card-text font-weight-bold">@house.SortRenter</p>
+                            <hr />
+                            @if (house.SellerId == ViewBag.SellerId)
+                            {
+                                <!-- Bewerkknop toevoegen -->
+                                <a href="#" class="btn btn-secondary position-absolute top-0 start-0 m-2 editButton" data-house-id="@house.HouseId"><i class="fas fa-pencil-alt"></i></a>
+                                <button type="button" class="btn btn-danger position-absolute top-0 end-0 m-2 deleteButton" data-house-id="@house.HouseId"><i class="fas fa-trash"></i></button>
+                                <form class="editForm" style="display: none;">
+                                    <input type="hidden" name="houseId" value="@house.HouseId" />
+                                    <input type="text" name="rentPerMonth" value="@house.RentPerMonth" placeholder="Nieuwe huurprijs" />
+                                    <input type="date" name="availableAt" value="@house.AvailableAt" placeholder="Nieuwe beschikbaarheid" />
+                                    <!-- Opslaan-knop toevoegen -->
+                                    <br />
+                                    <button type="button" class="btn custom-btn btn-block saveButton">Opslaan</button>
+                                </form>
+                                <button type="button" class="btn custom-btn btn-block EigenhuisButton" >Eigen huis</button>
+                            }
+                            else
+                            {
+                                <a href="#" class="btn custom-btn btn-block">Meer informatie</a>
+                            }
+
                         </div>
                     </div>
                 </div>
             }
-
-@*             <div class="col-md-3">
-                <div class="card bg-light">
-                    <img src="~/Images/testhuis.jpg" class="card-img-top" alt="Foto 1">
-                    <div class="card-body">
-                        <h4 class="card-title text-center">300€ per maand</h4>
-                        <h5 class="card-title text-center">Informatie</h5>
-                        <h7 class="card-text">Beschikbaar vanaf : 15 maart</h7><br>
-                        <p class="card-text font-weight-bold">Persoonlijke verhuurder</p>
-                        <hr>
-                        <a href="#" class="btn custom-btn btn-block">Meer informatie</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card bg-light">
-                    <img src="~/Images/testhuis.jpg" class="card-img-top" alt="Foto 1">
-                    <div class="card-body">
-                        <h4 class="card-title text-center">300€ per maand</h4>
-                        <h5 class="card-title text-center">Informatie</h5>
-                        <h7 class="card-text">Beschikbaar vanaf : 15 maart</h7><br>
-                        <p class="card-text font-weight-bold">Persoonlijke verhuurder</p>
-                        <hr> <!-- Witregel -->
-                        <a href="#" class="btn custom-btn btn-block">Meer informatie</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card bg-light">
-                    <img src="~/Images/testhuis.jpg" class="card-img-top" alt="Foto 1">
-                    <div class="card-body">
-                        <h4 class="card-title text-center">300€ per maand</h4>
-                        <h5 class="card-title text-center">Informatie</h5>
-                        <h7 class="card-text">Beschikbaar vanaf : 15 maart</h7><br>
-                        <p class="card-text font-weight-bold">Persoonlijke verhuurder</p>
-                        <hr> <!-- Witregel -->
-                        <a href="#" class="btn custom-btn btn-block">Meer informatie</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card bg-light">
-                    <img src="~/Images/testhuis.jpg" class="card-img-top" alt="Foto 1">
-                    <div class="card-body">
-                        <h4 class="card-title text-center">300€ per maand</h4>
-                        <h5 class="card-title text-center">Informatie</h5>
-                        <h7 class="card-text">Beschikbaar vanaf : 15 maart</h7><br>
-                        <p class="card-text font-weight-bold">Persoonlijke verhuurder</p>
-                        <hr> <!-- Witregel -->
-                        <a href="#" class="btn custom-btn btn-block">Meer informatie</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card bg-light">
-                    <img src="~/Images/testhuis.jpg" class="card-img-top" alt="Foto 1">
-                    <div class="card-body">
-                        <h4 class="card-title text-center">300€ per maand</h4>
-                        <h5 class="card-title text-center">Informatie</h5>
-                        <h7 class="card-text">Beschikbaar vanaf : 15 maart</h7><br>
-                        <p class="card-text font-weight-bold">Persoonlijke verhuurder</p>
-                        <hr> <!-- Witregel -->
-                        <a href="#" class="btn custom-btn btn-block">Meer informatie</a>
-                    </div>
-                </div>
-            </div> *@
         </div>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $(".deleteButton").on("click", function () {
+            var $this = $(this);
+            console.log("knopje gedrukt");
+            var houseId = $this.data("house-id"); // Veranderd naar data("house-id")
+            console.log(houseId);
+            if (confirm("Weet je zeker dat je je huis wilt verwijderen?")) {
+                $.ajax({
+                    url: "/Home/DeleteHouse",
+                    type: "POST",
+                    data: { houseId: houseId },
+                    success: function (response) {
+                        if (response.success) {
+                            alert("Succesvol verwijderd");
+                            $this.closest(".col-md-3").remove(); // Veranderd naar closest(".col-md-3")
+                        } else {
+                            alert("Er ging iets mis");
+                        }
+                    },
+                    error: function () {
+                        alert("Er is een fout opgetreden bij het verwijderen");
+                    }
+                });
+            }
+        });
+    });
+    $(document).ready(function () {
+        $(".editButton").on("click", function () {
+            var $this = $(this);
+            var $card = $this.closest(".card"); // Vind de dichtstbijzijnde ouderkaart
+            var $editForm = $card.find(".editForm");
+            var $eigenHuisButton = $card.find(".EigenhuisButton");
+
+            // Verberg alle andere bewerkformulieren
+            $(".editForm").not($editForm).hide();
+
+            // Verberg alle andere EigenhuisButtons binnen dezelfde kaart
+            $card.find(".EigenhuisButton").not($eigenHuisButton).hide();
+
+            // Toon dit bewerkformulier
+            $editForm.toggle();
+            // Toon deze EigenhuisButton
+            $eigenHuisButton.toggle();
+        });
+
+        $(".saveButton").on("click", function () {
+            var $this = $(this);
+            var $editForm = $this.closest(".editForm");
+            var houseId = $editForm.find("input[name='houseId']").val();
+            var rentPerMonth = $editForm.find("input[name='rentPerMonth']").val();
+            var availableAt = $editForm.find("input[name='availableAt']").val();
+
+            // AJAX-verzoek om gegevens bij te werken
+            $.ajax({
+                url: "/Home/UpdateHouse",
+                type: "POST",
+                data: {
+                    houseId: houseId,
+                    rentPerMonth: rentPerMonth,
+                    availableAt: availableAt
+                },
+                success: function (response) {
+                    if (response.success) {
+                        alert("Succesvol bijgewerkt");
+                        location.reload();
+                    } else {
+                        alert("Er ging iets mis");
+                    }
+                },
+                error: function () {
+                    alert("Er is een fout opgetreden bij het bijwerken");
+                }
+            });
+        });
+    });
+
+
+
+</script>
+
+
+

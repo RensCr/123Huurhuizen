@@ -46,5 +46,20 @@ namespace _123Huurhuizen.Controllers
 
             return false;
         }
+        public int GetSellerId(HttpRequest request)
+        {
+            try
+            {
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var tokenString = request.Cookies["jwtToken"];
+                var token = tokenHandler.ReadJwtToken(tokenString);
+                var IdClaim = token.Claims.FirstOrDefault(c => c.Type == "Id");
+                var Id = int.Parse(IdClaim.Value);
+                return Id;
+            }
+            catch {
+                return -1;
+            }
+        }
     }
 }

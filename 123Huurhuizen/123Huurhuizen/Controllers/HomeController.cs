@@ -24,11 +24,10 @@ namespace _123Huurhuizen.Controllers
         public IActionResult Index()
         {
             IHouseRepository houseRepository = new HouseRepository();
-            List<Photo> photos = houseRepository.GetFirstHousePicture();
-            List<double> PricesPerMonth = houseRepository.GetRentPricePerMonth();
-            List<string> StartDates = houseRepository.GetStartRentedDays();
-            List<string> Renters = houseRepository.GetSortRenter(); // Of een andere gewenste lege lijst
-            return View(new HouseViewModel(photos, PricesPerMonth, StartDates, Renters));
+            List<House> houses = houseRepository.GetAllHouses();
+            int SellerId = logincheck.GetSellerId(Request);
+            ViewBag.SellerId = SellerId;
+            return View(new HouseViewModel(houses));
         }
 
         public IActionResult Privacy()
@@ -45,7 +44,10 @@ namespace _123Huurhuizen.Controllers
         }
         public IActionResult AddHouse()
         {
-
+            if (!logincheck.CheckValidJwtToken(Request))
+            {
+                return View("~/Views/Account/Login.cshtml");
+            }
             return View();
         }
         [HttpPost]
@@ -64,17 +66,30 @@ namespace _123Huurhuizen.Controllers
                 string photolink = publisher.UploadImage(imageData);
                 PhotosLink.Add(photolink);
             }
-            HouseInformation houseInfo = new HouseInformation(location, price, date.Date, information);
-            House house = new House();
+            HouseInformation houseInfo = new HouseInformation(logincheck.GetSellerId(Request),location, price, date.Date, information);
             IHouseRepository houseRepository = new HouseRepository();
-            int CreatedHouseId = house.GiveHouseInformationToDal(houseInfo, houseRepository);
-            house.GiveHousePicturesToDal(CreatedHouseId, PhotosLink, houseRepository);
+            int createdHouseId = houseRepository.AddHouse(houseInfo);
+            houseRepository.AddHousePictures(createdHouseId, PhotosLink);
             return View();
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+        [HttpPost]
+        public ActionResult DeleteHouse(int houseId)
+        {
+            IHouseRepository houseRepository= new HouseRepository();
+            bool result = houseRepository.DeleteHouse(houseId);
+            return Json(new { success = result });
+        }
+        [HttpPost]
+        public ActionResult UpdateHouse(int houseId, double rentPerMonth, DateTime availableAt)
+        {
+            IHouseRepository houseRepository = new HouseRepository();
+            bool result = houseRepository.UpdateHouse(houseId,rentPerMonth,availableAt);
+            return Json(new { success = result });
         }
     }
 }
