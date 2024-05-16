@@ -109,10 +109,10 @@
         if (currentCheckbox.checked) {
             otherCheckbox.checked = false;
             currentCheckbox.value = true;
-            otherCheckbox.value = false; // Zet de waarde van het hidden input-veld op "false"
-            otherCheckbox.removeAttribute('required'); // Verwijder de 'required' attribuut van het andere checkbox
+            otherCheckbox.value = false; 
+            otherCheckbox.removeAttribute('required'); 
         } else {
-            otherCheckbox.setAttribute('required', ''); // Voeg de 'required' attribuut toe aan het andere checkbox
+            otherCheckbox.setAttribute('required', ''); 
         }
         var extraOptionsDiv = document.getElementById('extraOptions');
         var body = document.querySelector('body');
@@ -144,10 +144,10 @@
         if (currentCheckbox.checked) {
             otherCheckbox.checked = false;
             currentCheckbox.value = true;
-            otherCheckbox.value = false; // Zet de waarde van het hidden input-veld op "false"
-            otherCheckbox.removeAttribute('required'); // Verwijder de 'required' attribuut van het andere checkbox
+            otherCheckbox.value = false;
+            otherCheckbox.removeAttribute('required');
         } else {
-            otherCheckbox.setAttribute('required', ''); // Voeg de 'required' attribuut toe aan het andere checkbox
+            otherCheckbox.setAttribute('required', '');
         }
     }
 </script>

@@ -14,27 +14,20 @@ namespace _123Huurhuizen.Controllers
             if (!string.IsNullOrEmpty(jwtString))
             {
                 var handler = new JwtSecurityTokenHandler();
-
-                // Define your secret key (ensure it matches the key used for token generation)
                 var securityKey =
                     "jDv3wF1oZTcX7rEm5qHlA4N8kGyS9iP2uWbO6sYtLxKzJgRnU0fDpVQeCbIaMh";
 
-                // Define token validation parameters
                 var tokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuer = false, // Set to true if you need issuer validation
+                    ValidateIssuer = false,
                     ValidateIssuerSigningKey = false,
                     ValidateAudience = false,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(securityKey))
-
-                    // Set the ValidAudience property to the expected audience value
                 };
 
                 try
                 {
-                    // Validate the token
                     handler.ValidateToken(jwtString, tokenValidationParameters, out _);
-                    // Token is valid
                     return true;
                 }
                 catch (SecurityTokenException error) { 
@@ -51,15 +44,35 @@ namespace _123Huurhuizen.Controllers
             try
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
-                var tokenString = request.Cookies["jwtToken"];
-                var token = tokenHandler.ReadJwtToken(tokenString);
-                var IdClaim = token.Claims.FirstOrDefault(c => c.Type == "Id");
-                var Id = int.Parse(IdClaim.Value);
-                return Id;
+                var jwtTokenCookie = request.Cookies["jwtToken"];
+
+                if (jwtTokenCookie != null)
+                {
+                    var tokenString = jwtTokenCookie;
+                    var token = tokenHandler.ReadJwtToken(tokenString);
+
+                    var IdClaim = token.Claims.FirstOrDefault(c => c.Type == "Id");
+
+                    if (IdClaim != null)
+                    {
+                        var Id = int.Parse(IdClaim.Value);
+                        return Id;
+                    }
+                    else
+                    {
+                        return -1;
+                    }
+                }
+                else
+                {
+                    return -1;
+                }
             }
-            catch {
+            catch (Exception ex)
+            {
                 return -1;
             }
         }
+
     }
 }

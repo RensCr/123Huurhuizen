@@ -54,7 +54,7 @@
         $(".deleteButton").on("click", function () {
             var $this = $(this);
             console.log("knopje gedrukt");
-            var houseId = $this.data("house-id"); // Veranderd naar data("house-id")
+            var houseId = $this.data("house-id"); 
             console.log(houseId);
             if (confirm("Weet je zeker dat je je huis wilt verwijderen?")) {
                 $.ajax({
@@ -64,7 +64,7 @@
                     success: function (response) {
                         if (response.success) {
                             alert("Succesvol verwijderd");
-                            $this.closest(".col-md-3").remove(); // Veranderd naar closest(".col-md-3")
+                            $this.closest(".col-md-3").remove(); 
                         } else {
                             alert("Er ging iets mis");
                         }
@@ -82,16 +82,9 @@
             var $card = $this.closest(".card"); // Vind de dichtstbijzijnde ouderkaart
             var $editForm = $card.find(".editForm");
             var $eigenHuisButton = $card.find(".EigenhuisButton");
-
-            // Verberg alle andere bewerkformulieren
             $(".editForm").not($editForm).hide();
-
-            // Verberg alle andere EigenhuisButtons binnen dezelfde kaart
             $card.find(".EigenhuisButton").not($eigenHuisButton).hide();
-
-            // Toon dit bewerkformulier
             $editForm.toggle();
-            // Toon deze EigenhuisButton
             $eigenHuisButton.toggle();
         });
 
@@ -101,8 +94,6 @@
             var houseId = $editForm.find("input[name='houseId']").val();
             var rentPerMonth = $editForm.find("input[name='rentPerMonth']").val();
             var availableAt = $editForm.find("input[name='availableAt']").val();
-
-            // AJAX-verzoek om gegevens bij te werken
             $.ajax({
                 url: "/Home/UpdateHouse",
                 type: "POST",

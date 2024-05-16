@@ -10,8 +10,6 @@
     <form enctype="multipart/form-data" asp-controller="Home" asp-action="AddHouse">
         <label for="location">Locatie:</label>
         <input type="text" id="location" name="location" required><br><br>
-
-        <!-- Verborgen inputveld voor tijd -->
         <input type="hidden" id="time" name="time">
 
         <label for="date">Datum:</label>
@@ -22,20 +20,14 @@
 
         <label for="information">Aanvullende informatie:</label>
         <textarea id="information" name="information" rows="4" cols="50"></textarea><br><br>
-
-        <!-- Bestandsinvoerveld voor het uploaden van één foto -->
         <label for="photos">Foto uploaden:</label>
         <input type="file" id="photos" name="photos" accept=".png, .jpg" multiple onchange="displaySelectedFile(this.files)">
-
-
-        <!-- Container voor weergave van geselecteerde foto's -->
         <div id="selectedFiles"></div><br><br>
 
         <input type="submit" value="Verzenden">
     </form>
 
     <script>
-        // JavaScript voor validatie en instellen van de tijd
         function validateForm() {
             var locationInput = document.getElementById("location").value;
             if (locationInput.trim() === "") {
@@ -43,20 +35,18 @@
                 return false;
             }
 
-            // Tijdstip instellen op het huidige tijdstip
             document.getElementById('date').addEventListener('change', function () {
-                var inputDate = new Date(this.value); // Convert input value to Date object
-                var formattedDate = inputDate.toISOString().split('T')[0]; // Extract only the date part
-                console.log(formattedDate); // Output the formatted date (YYYY-MM-DD)
+                var inputDate = new Date(this.value);
+                var formattedDate = inputDate.toISOString().split('T')[0];
+                console.log(formattedDate); 
             });
 
             return true;
         }
 
-        // JavaScript om de geselecteerde foto weer te geven
         function displaySelectedFile(files) {
             var selectedFilesDiv = document.getElementById("selectedFiles");
-            selectedFilesDiv.innerHTML = ''; // Clear the div before adding new files
+            selectedFilesDiv.innerHTML = '';
 
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];

@@ -27,8 +27,7 @@ namespace Dal
             }
             catch (Exception ex)
             {
-                // Handle exceptions appropriately
-                return -1; // Return a default value or throw an exception
+                return -1; 
             }
             finally
             {
@@ -116,14 +115,11 @@ namespace Dal
                     x  = deletePhotosCommand.ExecuteNonQuery();
                 }
 
-                // Als er rijen zijn beïnvloed (d.w.z. verwijderd), geven we true terug, anders false
                 return x > 0;
             }
             catch (Exception ex)
             {
-                // Handel uitzonderingen op de juiste manier af
-                // Hier kun je logica toevoegen om de fout te registreren of te verwerken
-                return false; // Geef false terug in geval van een fout
+                return false;
             }
             finally
             {
@@ -139,15 +135,11 @@ namespace Dal
                 string updateHouseQuery = $"UPDATE house SET price = '{rentPerMonth}', rentalStartTime = '{availableAt.ToString("yyyy-MM-dd")}' WHERE id = {houseId};";
                 MySqlCommand updateCommand = new MySqlCommand(updateHouseQuery, connection);
                 int rowsAffected = updateCommand.ExecuteNonQuery();
-
-                // Als er rijen zijn beïnvloed (d.w.z. bijgewerkt), geven we true terug, anders false
                 return rowsAffected > 0;
             }
             catch (Exception ex)
             {
-                // Handel uitzonderingen op de juiste manier af
-                // Hier kun je logica toevoegen om de fout te registreren of te verwerken
-                return false; // Geef false terug in geval van een fout
+                return false;
             }
             finally
             {

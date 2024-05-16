@@ -14,21 +14,28 @@ namespace _123Huurhuizen.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly Logincheck
-            logincheck = new(); //Make sure to use this in all Http methods to check if the user is logged in
+        //todo dependency injection toepassen : Voorbeeld in homecontroller
+
+        public AccountController()
+        {
+                
+        }
+
         public IActionResult Index()
         {
             return View();
         }
+
         public IActionResult Create()
         {
             return View();
         }
+
         public IActionResult Login()
         {
             return View();
         }
+
         [HttpPost]
         public IActionResult Login(string Email, string password)
         {
@@ -57,7 +64,7 @@ namespace _123Huurhuizen.Controllers
                 Response.Cookies.Append("jwtToken", tokenstring, new CookieOptions
                 {
                     Expires = DateTime.UtcNow.AddDays(expirationTime),
-                    HttpOnly = true //Cookie can only be found in an http request
+                    HttpOnly = true 
                 });
                 IHouseRepository houseRepository = new HouseRepository();
                 List<House> houses = houseRepository.GetAllHouses();
@@ -69,18 +76,18 @@ namespace _123Huurhuizen.Controllers
         }
 
         [HttpPost]
-        public IActionResult Aanmaak(string name,string email, string password, string repeatedpassword,bool checkboxForRent, bool? companyRent)
+        public IActionResult Aanmaak(string name, string email, string password, string repeatedpassword, bool checkboxForRent, bool? companyRent)
         {
             if (password == repeatedpassword)
             {
                 IUserRepository userDB = new UserRepository();
                 Account account = new Account();
-                
+
                 string hashedPassword = account.HashPassword(password);
                 try
                 {
                     User user = new User(name, email, hashedPassword, checkboxForRent, companyRent);
-                    account.AddAccount(user,userDB);
+                    account.AddAccount(user, userDB);
                 }
                 catch (Exception ex) { }
 
@@ -91,6 +98,5 @@ namespace _123Huurhuizen.Controllers
                 return View();
             }
         }
-
     }
 }

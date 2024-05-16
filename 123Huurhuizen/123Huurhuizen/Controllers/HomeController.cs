@@ -13,8 +13,7 @@ namespace _123Huurhuizen.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly Logincheck
-            logincheck = new(); //Make sure to use this in all Http methods to check if the user is logged in
+        private readonly Logincheck logincheck = new();
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -34,6 +33,7 @@ namespace _123Huurhuizen.Controllers
         {
             return View();
         }
+
         public IActionResult Home()
         {
             if (!logincheck.CheckValidJwtToken(Request))
@@ -42,6 +42,7 @@ namespace _123Huurhuizen.Controllers
             }
             return View();
         }
+
         public IActionResult AddHouse()
         {
             if (!logincheck.CheckValidJwtToken(Request))
@@ -50,6 +51,7 @@ namespace _123Huurhuizen.Controllers
             }
             return View();
         }
+
         [HttpPost]
         public IActionResult Addhouse(string location, DateTime date, double price,string information, List<IFormFile> photos)
         {
@@ -72,11 +74,13 @@ namespace _123Huurhuizen.Controllers
             houseRepository.AddHousePictures(createdHouseId, PhotosLink);
             return View();
         }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
         [HttpPost]
         public ActionResult DeleteHouse(int houseId)
         {
@@ -84,6 +88,7 @@ namespace _123Huurhuizen.Controllers
             bool result = houseRepository.DeleteHouse(houseId);
             return Json(new { success = result });
         }
+
         [HttpPost]
         public ActionResult UpdateHouse(int houseId, double rentPerMonth, DateTime availableAt)
         {
