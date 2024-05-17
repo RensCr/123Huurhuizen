@@ -3,20 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewData["Title"]</title>
+    <title>Voeg Huis Toe</title>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js'></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js'></script>
+
+    <script id="search-js" defer="" src="https://api.mapbox.com/search-js/v1.0.0-beta.21/web.js"></script>
+
+    <style>
+        .suggestion {
+            padding: 5px;
+            cursor: pointer;
+        }
+
+            .suggestion:hover {
+                background-color: #f0f0f0;
+            }
+    </style>
 </head>
+
 <body>
-    <h1>Voer gegevens in:</h1>
-    <form enctype="multipart/form-data" asp-controller="Home" asp-action="AddHouse">
+    <h1>Voeg gegevens van het huis toe:</h1>
+    <form enctype="multipart/form-data" asp-controller="Home" asp-action="AddHouse" onsubmit="return validateForm()">
         <label for="location">Locatie:</label>
-        <input type="text" id="location" name="location" required><br><br>
-        <input type="hidden" id="time" name="time">
+        <mapbox-address-autofill>
+            <input type="text" id="location" name="location" autocomplete="huisadress" placeholder="huisadress">
+        </mapbox-address-autofill>
+        <div id="suggestions"></div><br><br>
 
         <label for="date">Datum:</label>
         <input type="date" id="date" name="date" required><br><br>
 
         <label for="price">Prijs:</label>
-        <input type="number" id="price" name="price" step="0.01" required><span>€</span><br><br>
+        <input type="number" id="price" name="price" step="1" min="0" required><span>€</span><br><br>
 
         <label for="information">Aanvullende informatie:</label>
         <textarea id="information" name="information" rows="4" cols="50"></textarea><br><br>
@@ -27,6 +45,8 @@
         <input type="submit" value="Verzenden">
     </form>
 
+
+</html>
     <script>
         function validateForm() {
             var locationInput = document.getElementById("location").value;
@@ -35,11 +55,11 @@
                 return false;
             }
 
-            document.getElementById('date').addEventListener('change', function () {
-                var inputDate = new Date(this.value);
-                var formattedDate = inputDate.toISOString().split('T')[0];
-                console.log(formattedDate); 
-            });
+            var dateInput = document.getElementById("date").value;
+            if (dateInput === "") {
+                alert("Selecteer een datum.");
+                return false;
+            }
 
             return true;
         }
@@ -56,6 +76,16 @@
                 selectedFilesDiv.appendChild(fileElement);
             }
         }
+
+    const ACCESS_TOKEN = 'pk.eyJ1IjoiNTM2NjA0IiwiYSI6ImNsdzk4bTBseDAwejEya3N2dnN5MDhxeGgifQ.WqBg1O0Cu4kL4X4RiFZ0jA';
+
+    const script = document.getElementById('search-js');
+    script.onload = () => {
+        const elements = document.querySelectorAll('mapbox-address-autofill');
+        for (const autofill of elements) {
+            autofill.accessToken = ACCESS_TOKEN;
+        }
+    };
     </script>
 </body>
 </html>

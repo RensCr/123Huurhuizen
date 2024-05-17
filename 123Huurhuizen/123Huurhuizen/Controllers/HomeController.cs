@@ -23,9 +23,12 @@ namespace _123Huurhuizen.Controllers
         public IActionResult Index()
         {
             IHouseRepository houseRepository = new HouseRepository();
+            IUserRepository userRepository = new UserRepository();
             List<House> houses = houseRepository.GetAllHouses();
-            int SellerId = logincheck.GetSellerId(Request);
-            ViewBag.SellerId = SellerId;
+            int UserId = logincheck.GetUserId(Request);
+            string UserName = userRepository.GetUserName(UserId);
+            ViewBag.SellerId = UserId;
+            ViewBag.UserName = UserName;    
             return View(new HouseViewModel(houses));
         }
 
@@ -68,7 +71,7 @@ namespace _123Huurhuizen.Controllers
                 string photolink = publisher.UploadImage(imageData);
                 PhotosLink.Add(photolink);
             }
-            HouseInformation houseInfo = new HouseInformation(logincheck.GetSellerId(Request),location, price, date.Date, information);
+            HouseInformation houseInfo = new HouseInformation(logincheck.GetUserId(Request),location, price, date.Date, information);
             IHouseRepository houseRepository = new HouseRepository();
             int createdHouseId = houseRepository.AddHouse(houseInfo);
             houseRepository.AddHousePictures(createdHouseId, PhotosLink);

@@ -17,6 +17,16 @@
                 <a class="navbar-brand mr-auto" href="#">
                     <a class="btn" asp-action="Login" asp-controller="Account">
                         <img src="~/Images/ProfilePicture.png" style="width: 60px; height: 50px;" alt="Account Logo">
+
+                        @if (ViewBag.SellerId > 0)
+                        {
+                            <p>@ViewBag.UserName</p>
+
+                        }
+                        else
+                        {
+                            <p>Login</p>
+                        }
                     </a>
                 </a>
 

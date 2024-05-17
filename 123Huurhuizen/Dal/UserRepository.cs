@@ -12,6 +12,7 @@ namespace Dal
     public class UserRepository : IUserRepository
     {
         private string constring = "Server=127.0.0.1;Port=3306;Database=123huizen;Uid=root;";
+
         public bool CreateAccount(User user)
         {
             MySqlConnection connection = new MySqlConnection(constring);
@@ -51,6 +52,7 @@ namespace Dal
             }
 
         }
+
         public bool CheckIfUserExist(string email, string hashedPassword, out int userId)
         {
             MySqlConnection connection = new MySqlConnection(constring);
@@ -78,5 +80,29 @@ namespace Dal
             return false;
         }
 
+        public string GetUserName(int id)
+        {
+            string name = "";
+            MySqlConnection connection = new MySqlConnection(constring);
+            try
+            {
+                connection.Open();
+                string CheckUserExistQuery = $"SELECT name FROM user where id ={id}";
+                MySqlCommand mySqlCommand = new MySqlCommand(CheckUserExistQuery, connection);
+                MySqlDataReader reader = mySqlCommand.ExecuteReader();
+
+
+                while (reader.Read())
+                {
+                    name = reader.GetString(0);
+                }
+
+            }
+            finally { 
+                connection.Close(); 
+            }
+
+            return name;
+        }
     }
 }

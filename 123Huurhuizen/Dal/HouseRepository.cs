@@ -14,6 +14,7 @@ namespace Dal
     public class HouseRepository : IHouseRepository
     {
         private string constring = "Server=127.0.0.1;Port=3306;Database=123huizen;Uid=root;";
+
         public int AddHouse(HouseInformation house)
         {
             MySqlConnection connection = new MySqlConnection(constring);

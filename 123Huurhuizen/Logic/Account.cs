@@ -24,6 +24,7 @@ namespace Logic
             Console.WriteLine(builder.ToString());
             return builder.ToString();
         }
+
         public bool AddAccount(User user, IUserRepository userDB)
         {
             try 

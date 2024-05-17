@@ -39,7 +39,8 @@ namespace _123Huurhuizen.Controllers
 
             return false;
         }
-        public int GetSellerId(HttpRequest request)
+
+        public int GetUserId(HttpRequest request)
         {
             try
             {
@@ -73,6 +74,5 @@ namespace _123Huurhuizen.Controllers
                 return -1;
             }
         }
-
     }
 }
