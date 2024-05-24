@@ -78,5 +78,30 @@ namespace Dal
             return false;
         }
 
+        public string GetUserName(int id)
+        {
+            string name = "";
+            MySqlConnection connection = new MySqlConnection(constring);
+            try
+            {
+                connection.Open();
+                string CheckUserExistQuery = $"SELECT name FROM user where id ={id}";
+                MySqlCommand mySqlCommand = new MySqlCommand(CheckUserExistQuery, connection);
+                MySqlDataReader reader = mySqlCommand.ExecuteReader();
+
+
+                while (reader.Read())
+                {
+                    name = reader.GetString(0);
+                }
+
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+            return name;
+        }
     }
 }

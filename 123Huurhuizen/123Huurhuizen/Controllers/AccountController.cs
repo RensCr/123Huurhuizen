@@ -44,6 +44,7 @@ namespace _123Huurhuizen.Controllers
             string hashedPassword = account.HashPassword(password);
             if (account.IsValidUser(Email, hashedPassword, userDB, out int userId))
             {
+                string Username = account.GetUserName(userId, userDB);
                 int expirationTime = 7;
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(
@@ -53,6 +54,7 @@ namespace _123Huurhuizen.Controllers
                     Subject = new ClaimsIdentity(new[]
                     {
                     new Claim("Email", Email),
+                    new Claim("Name", Username),
                     new Claim("Id", userId.ToString())
                 }),
                     Expires = DateTime.UtcNow.AddDays(expirationTime),
@@ -97,6 +99,20 @@ namespace _123Huurhuizen.Controllers
             {
                 return View();
             }
+        }
+        [HttpPost]
+        public IActionResult Logout()
+        {
+            if (HttpContext.Request.Cookies["jwtToken"] != null)
+            {
+                // Set the cookie to expire immediately
+                Response.Cookies.Append("jwtToken", "", new CookieOptions
+                {
+                    Expires = DateTimeOffset.UtcNow.AddDays(-1),
+                    HttpOnly = true,
+                });
+            }
+            return RedirectToAction("Index", "Home");
         }
 
     }
