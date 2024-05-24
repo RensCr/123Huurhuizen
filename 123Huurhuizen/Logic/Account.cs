@@ -24,6 +24,7 @@ namespace Logic
             Console.WriteLine(builder.ToString());
             return builder.ToString();
         }
+
         public bool AddAccount(User user, IUserRepository userDB)
         {
             try 
@@ -50,6 +51,16 @@ namespace Logic
             }
 
         }
+        public string GetUserName(int userId, IUserRepository userRepository)
+        {
+            string UserName = userRepository.GetUserName(userId);
+            return UserName;
+        }
+
+
+
+
+
 
     }
 }

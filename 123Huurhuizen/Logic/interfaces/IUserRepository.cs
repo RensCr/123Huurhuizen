@@ -11,5 +11,6 @@ namespace Logic.interfaces
     {
         public bool CreateAccount(User user);
         public bool CheckIfUserExist(string name, string hashedPassword, out int userId);
+        public string GetUserName(int id);
     }
 }

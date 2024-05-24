@@ -76,21 +76,23 @@
         });
     });
     $(document).ready(function () {
-        $(".editButton").on("click", function () {
+        $(".editButton").on("click", function (event) {
+            event.preventDefault(); // Prevent the default action
+
             var $this = $(this);
-            var $card = $this.closest(".card"); // Vind de dichtstbijzijnde ouderkaart
+            var $card = $this.closest(".card");
             var $editForm = $card.find(".editForm");
             var $eigenHuisButton = $card.find(".EigenhuisButton");
 
-            // Verberg alle andere bewerkformulieren
+            // Hide all other edit forms
             $(".editForm").not($editForm).hide();
 
-            // Verberg alle andere EigenhuisButtons binnen dezelfde kaart
+            // Hide all other EigenhuisButtons within the same card
             $card.find(".EigenhuisButton").not($eigenHuisButton).hide();
 
-            // Toon dit bewerkformulier
+            // Toggle this edit form
             $editForm.toggle();
-            // Toon deze EigenhuisButton
+            // Toggle this EigenhuisButton
             $eigenHuisButton.toggle();
         });
 
@@ -101,7 +103,7 @@
             var rentPerMonth = $editForm.find("input[name='rentPerMonth']").val();
             var availableAt = $editForm.find("input[name='availableAt']").val();
 
-            // AJAX-verzoek om gegevens bij te werken
+            // AJAX request to update data
             $.ajax({
                 url: "/Home/UpdateHouse",
                 type: "POST",
