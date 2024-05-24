@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Dal;
 using Logic.interfaces;
 using Logic;
 using System.Security.Principal;
@@ -18,10 +17,16 @@ namespace _123Huurhuizen.Controllers
         private readonly Logincheck
             logincheck = new(); //Make sure to use this in all Http methods to check if the user is logged in
 
-        public AccountController(ILogger<HomeController> logger)
+        public AccountController(ILogger<HomeController> logger,IUserRepository userRepository,IHouseRepository houseRepository)
         {
             _logger = logger;
+            Account = new Account(userRepository);
+            houseService = new HouseService(houseRepository);
+
+
         }
+        private Account Account;
+        private HouseService houseService;
 
         public IActionResult Index()
         {
@@ -39,12 +44,10 @@ namespace _123Huurhuizen.Controllers
         [HttpPost]
         public IActionResult Login(string Email, string password)
         {
-            IUserRepository userDB = new UserRepository();
-            Account account = new Account();
-            string hashedPassword = account.HashPassword(password);
-            if (account.IsValidUser(Email, hashedPassword, userDB, out int userId))
+            string hashedPassword = Account.HashPassword(password);
+            if (Account.IsValidUser(Email, hashedPassword, out int userId))
             {
-                string Username = account.GetUserName(userId, userDB);
+                string Username = Account.GetUserName(userId);
                 int expirationTime = 7;
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(
@@ -68,8 +71,7 @@ namespace _123Huurhuizen.Controllers
                     Expires = DateTime.UtcNow.AddDays(expirationTime),
                     HttpOnly = true //Cookie can only be found in an http request
                 });
-                IHouseRepository houseRepository = new HouseRepository();
-                List<House> houses = houseRepository.GetAllHouses();
+                List<House> houses = houseService.GetAllHouses();
 
                 ViewBag.SellerId = userId;
                 return View("~/Views/Home/Index.cshtml", new HouseViewModel(houses));
@@ -82,14 +84,12 @@ namespace _123Huurhuizen.Controllers
         {
             if (password == repeatedpassword)
             {
-                IUserRepository userDB = new UserRepository();
-                Account account = new Account();
 
-                string hashedPassword = account.HashPassword(password);
+                string hashedPassword = Account.HashPassword(password);
                 try
                 {
                     User user = new User(name, email, hashedPassword, checkboxForRent, companyRent);
-                    account.AddAccount(user, userDB);
+                    Account.AddAccount(user);
                 }
                 catch (Exception ex) { }
 

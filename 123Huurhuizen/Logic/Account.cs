@@ -11,6 +11,11 @@ namespace Logic
 {
     public class Account
     {
+        private readonly IUserRepository _userRepository;
+        public Account(IUserRepository userRepository) 
+        {
+            this._userRepository = userRepository;
+        }
         public string HashPassword(string password)
         {
             using SHA256 sha256 = SHA256.Create();
@@ -25,11 +30,11 @@ namespace Logic
             return builder.ToString();
         }
 
-        public bool AddAccount(User user, IUserRepository userDB)
+        public bool AddAccount(User user)
         {
             try 
             {
-                userDB.CreateAccount(user);
+                _userRepository.CreateAccount(user);
                 return true;
             }
             catch (Exception)
@@ -37,9 +42,9 @@ namespace Logic
                 return false;
             }
         }
-        public bool IsValidUser(string email, string hashedPassword, IUserRepository userDB,out int userId)
+        public bool IsValidUser(string email, string hashedPassword ,out int userId)
         {
-            if (userDB.CheckIfUserExist(email, hashedPassword,out int user))
+            if (_userRepository.CheckIfUserExist(email, hashedPassword,out int user))
             {
                 userId = user;
                 return true;
@@ -51,9 +56,9 @@ namespace Logic
             }
 
         }
-        public string GetUserName(int userId, IUserRepository userRepository)
+        public string GetUserName(int userId)
         {
-            string UserName = userRepository.GetUserName(userId);
+            string UserName = _userRepository.GetUserName(userId);
             return UserName;
         }
 

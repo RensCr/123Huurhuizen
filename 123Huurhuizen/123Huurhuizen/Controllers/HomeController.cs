@@ -1,5 +1,5 @@
 using _123Huurhuizen.Models;
-using Dal;
+
 using Logic;
 using Logic.interfaces;
 using Logic.models;
@@ -16,15 +16,15 @@ namespace _123Huurhuizen.Controllers
         private readonly Logincheck
             logincheck = new(); //Make sure to use this in all Http methods to check if the user is logged in
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger,IHouseRepository houseRepository)
         {
             _logger = logger;
+            this.houseService = new HouseService(houseRepository);
         }
-
+        private readonly HouseService houseService;
         public IActionResult Index()
         {
-            IHouseRepository houseRepository = new HouseRepository();
-            List<House> houses = houseRepository.GetAllHouses();
+            List<House> houses = houseService.GetAllHouses();
             int SellerId = logincheck.GetSellerId(Request);
             ViewBag.SellerId = SellerId;
             return View(new HouseViewModel(houses));
@@ -67,9 +67,8 @@ namespace _123Huurhuizen.Controllers
                 PhotosLink.Add(photolink);
             }
             HouseInformation houseInfo = new HouseInformation(logincheck.GetSellerId(Request),location, price, date.Date, information);
-            IHouseRepository houseRepository = new HouseRepository();
-            int createdHouseId = houseRepository.AddHouse(houseInfo);
-            houseRepository.AddHousePictures(createdHouseId, PhotosLink);
+            int createdHouseId = houseService.AddHouse(houseInfo);
+            houseService.AddHousePictures(createdHouseId, PhotosLink);
             return View();
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -80,15 +79,13 @@ namespace _123Huurhuizen.Controllers
         [HttpPost]
         public ActionResult DeleteHouse(int houseId)
         {
-            IHouseRepository houseRepository= new HouseRepository();
-            bool result = houseRepository.DeleteHouse(houseId);
+            bool result = houseService.DeleteHouse(houseId);
             return Json(new { success = result });
         }
         [HttpPost]
         public ActionResult UpdateHouse(int houseId, double rentPerMonth, DateTime availableAt)
         {
-            IHouseRepository houseRepository = new HouseRepository();
-            bool result = houseRepository.UpdateHouse(houseId,rentPerMonth,availableAt);
+            bool result = houseService.UpdateHouse(houseId,rentPerMonth,availableAt);
             return Json(new { success = result });
         }
     }

@@ -1,7 +1,10 @@
+using Logic.interfaces;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IUserRepository, Dal.UserRepository>();
+builder.Services.AddScoped<IHouseRepository, Dal.HouseRepository>();
 
 var app = builder.Build();
 
