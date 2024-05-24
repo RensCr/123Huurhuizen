@@ -48,18 +48,30 @@ namespace _123Huurhuizen.Controllers
         }
         public int GetSellerId(HttpRequest request)
         {
+            int Id = -1;
             try
             {
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var tokenString = request.Cookies["jwtToken"];
-                var token = tokenHandler.ReadJwtToken(tokenString);
-                var IdClaim = token.Claims.FirstOrDefault(c => c.Type == "Id");
-                var Id = int.Parse(IdClaim.Value);
-                return Id;
+                if (request.Cookies.ContainsKey("jwtToken"))
+                {
+                    var tokenString = request.Cookies["jwtToken"];
+                    if (!string.IsNullOrEmpty(tokenString))
+                    {
+                        var tokenHandler = new JwtSecurityTokenHandler();
+                        var token = tokenHandler.ReadJwtToken(tokenString);
+                        var IdClaim = token.Claims.FirstOrDefault(c => c.Type == "Id");
+
+                        if (IdClaim != null && int.TryParse(IdClaim.Value, out int parsedId))
+                        {
+                            Id = parsedId;
+                        }
+                    }
+                }
             }
-            catch {
-                return -1;
+            catch (Exception ex)
+            {
             }
+            return Id;
         }
+
     }
 }

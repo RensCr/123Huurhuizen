@@ -17,10 +17,17 @@ namespace _123Huurhuizen.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly Logincheck
             logincheck = new(); //Make sure to use this in all Http methods to check if the user is logged in
+
+        public AccountController(ILogger<HomeController> logger)
+        {
+            _logger = logger;
+        }
+
         public IActionResult Index()
         {
             return View();
         }
+
         public IActionResult Create()
         {
             return View();
@@ -35,7 +42,7 @@ namespace _123Huurhuizen.Controllers
             IUserRepository userDB = new UserRepository();
             Account account = new Account();
             string hashedPassword = account.HashPassword(password);
-            if (account.IsValidUser(Email, hashedPassword, userDB,out int userId))
+            if (account.IsValidUser(Email, hashedPassword, userDB, out int userId))
             {
                 int expirationTime = 7;
                 var tokenHandler = new JwtSecurityTokenHandler();
@@ -61,7 +68,7 @@ namespace _123Huurhuizen.Controllers
                 });
                 IHouseRepository houseRepository = new HouseRepository();
                 List<House> houses = houseRepository.GetAllHouses();
-                
+
                 ViewBag.SellerId = userId;
                 return View("~/Views/Home/Index.cshtml", new HouseViewModel(houses));
             }
@@ -69,18 +76,18 @@ namespace _123Huurhuizen.Controllers
         }
 
         [HttpPost]
-        public IActionResult Aanmaak(string name,string email, string password, string repeatedpassword,bool checkboxForRent, bool? companyRent)
+        public IActionResult Aanmaak(string name, string email, string password, string repeatedpassword, bool checkboxForRent, bool? companyRent)
         {
             if (password == repeatedpassword)
             {
                 IUserRepository userDB = new UserRepository();
                 Account account = new Account();
-                
+
                 string hashedPassword = account.HashPassword(password);
                 try
                 {
                     User user = new User(name, email, hashedPassword, checkboxForRent, companyRent);
-                    account.AddAccount(user,userDB);
+                    account.AddAccount(user, userDB);
                 }
                 catch (Exception ex) { }
 

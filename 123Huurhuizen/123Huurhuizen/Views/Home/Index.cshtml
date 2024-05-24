@@ -10,8 +10,7 @@
         <!-- Add margin-bottom to the row -->
         <a asp-controller="Home" asp-action="AddHouse" class="btn btn-primary plus-btn"><i class="fas fa-plus"></i></a>
         <div class="row mb-4">
-            @foreach (var house in Model.houses)
-            {
+            @foreach (var house in Model.Houses )       {
                 <div class="col-md-3">
                     <div class="card bg-light">
                         <img src="@house.HousePhotos.FirstOrDefault()?.PhotoLink" class="card-img-top" alt="House Photo" style="max-width: 300px; max-height: 200px;">
