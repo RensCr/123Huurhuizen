@@ -48,31 +48,63 @@
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.0.18/sweetalert2.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.0.18/sweetalert2.min.css">
 <script>
     $(document).ready(function () {
         $(".deleteButton").on("click", function () {
             var $this = $(this);
             console.log("knopje gedrukt");
-            var houseId = $this.data("house-id"); // Veranderd naar data("house-id")
-            console.log(houseId);
-            if (confirm("Weet je zeker dat je je huis wilt verwijderen?")) {
-                $.ajax({
-                    url: "/Home/DeleteHouse",
-                    type: "POST",
-                    data: { houseId: houseId },
-                    success: function (response) {
-                        if (response.success) {
-                            alert("Succesvol verwijderd");
-                            $this.closest(".col-md-3").remove(); // Veranderd naar closest(".col-md-3")
-                        } else {
-                            alert("Er ging iets mis");
+            var houseId = $this.data("house-id"); // Haal het huis-ID op uit de knop
+            Swal.fire({
+                icon: 'warning',
+                title: 'Weet je zeker dat je dit huis wilt verwijderen?',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ja, verwijderen',
+                cancelButtonText: 'Annuleren'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Als de gebruiker op Ja klikt, huis verwijderen via AJAX
+                    $.ajax({
+                        url: "/Home/DeleteHouse",
+                        type: "POST",
+                        data: { houseId: houseId },
+                        success: function (response) {
+                            if (response.success) {
+                                // Succesmelding weergeven
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Succesvol verwijderd',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+
+                                // Verwijder het huis uit de DOM
+                                $this.closest(".col-md-3").remove();
+                            } else {
+                                // Foutmelding weergeven
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Er ging iets mis',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                            }
+                        },
+                        error: function () {
+                            // Foutmelding weergeven bij AJAX-fout
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Er is een fout opgetreden bij het verwijderen',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
                         }
-                    },
-                    error: function () {
-                        alert("Er is een fout opgetreden bij het verwijderen");
-                    }
-                });
-            }
+                    });
+                }
+            });
         });
     });
     $(document).ready(function () {
@@ -114,14 +146,31 @@
                 },
                 success: function (response) {
                     if (response.success) {
-                        alert("Succesvol bijgewerkt");
-                        location.reload();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Succesvol aangepast',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1500); // Wacht 1500 milliseconden (1,5 seconde) voordat de pagina wordt herladen
                     } else {
-                        alert("Er ging iets mis");
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Er ging iets mis bij het aanpassen',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
                     }
                 },
                 error: function () {
-                    alert("Er is een fout opgetreden bij het bijwerken");
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Er is een onbekende fout opgetreden',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 }
             });
         });

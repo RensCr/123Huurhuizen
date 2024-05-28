@@ -1,6 +1,7 @@
 using _123Huurhuizen.Models;
 
 using Logic;
+using Logic.dtos;
 using Logic.interfaces;
 using Logic.models;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +29,7 @@ namespace _123Huurhuizen.Controllers
             int SellerId = logincheck.GetSellerId(Request);
             ViewBag.SellerId = SellerId;
             return View(new HouseViewModel(houses));
+
         }
 
         public IActionResult Privacy()
@@ -51,25 +53,16 @@ namespace _123Huurhuizen.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Addhouse(string location, DateTime date, double price,string information, List<IFormFile> photos)
+        public IActionResult AddHouse(AddHouseViewModel model)
         {
-            PhotoPublisher publisher = new PhotoPublisher();
-            List<string> PhotosLink = new List<string>();
-            foreach (var photo in photos)
+            if (ModelState.IsValid)
             {
-                byte[] imageData;
-                using (var memoryStream = new MemoryStream())
-                {
-                    photo.CopyTo(memoryStream);
-                    imageData = memoryStream.ToArray();
-                }
-                string photolink = publisher.UploadImage(imageData);
-                PhotosLink.Add(photolink);
+                int createdHouseId = houseService.AddHouse(CreateHouseInformation(model));
+                houseService.AddHousePictures(createdHouseId, PhotoPublisher(model.photos));
+
+                return RedirectToAction("Index"); 
             }
-            HouseInformation houseInfo = new HouseInformation(logincheck.GetSellerId(Request),location, price, date.Date, information);
-            int createdHouseId = houseService.AddHouse(houseInfo);
-            houseService.AddHousePictures(createdHouseId, PhotosLink);
-            return View();
+            return View(model);
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
@@ -87,6 +80,36 @@ namespace _123Huurhuizen.Controllers
         {
             bool result = houseService.UpdateHouse(houseId,rentPerMonth,availableAt);
             return Json(new { success = result });
+        }
+
+        private HouseInformation CreateHouseInformation(AddHouseViewModel model)
+        {
+            return new HouseInformation(
+                logincheck.GetSellerId(Request),
+                model.Location,
+                model.Price,
+                model.Date,
+                model.Information
+            );
+        }
+
+        private List<string> PhotoPublisher(List<IFormFile> photos)
+        {
+            var publisher = new PhotoPublisher();
+            var photosLinks = new List<string>();
+
+            foreach (var photo in photos)
+            {
+                byte[] imageData;
+                using (var memoryStream = new MemoryStream())
+                {
+                    photo.CopyTo(memoryStream);
+                    imageData = memoryStream.ToArray();
+                }
+                string photoLink = publisher.UploadImage(imageData);
+                photosLinks.Add(photoLink);
+            }
+            return photosLinks;
         }
     }
 }

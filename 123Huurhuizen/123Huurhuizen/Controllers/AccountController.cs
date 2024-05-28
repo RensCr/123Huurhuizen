@@ -21,12 +21,12 @@ namespace _123Huurhuizen.Controllers
         {
             _logger = logger;
             Account = new Account(userRepository);
+            userService = new UserService(userRepository);
             houseService = new HouseService(houseRepository);
-
-
         }
         private Account Account;
         private HouseService houseService;
+        private UserService userService;
 
         public IActionResult Index()
         {
@@ -44,62 +44,52 @@ namespace _123Huurhuizen.Controllers
         [HttpPost]
         public IActionResult Login(string Email, string password)
         {
-            string hashedPassword = Account.HashPassword(password);
-            if (Account.IsValidUser(Email, hashedPassword, out int userId))
+            if (userService.TryAuthenticateUser(Email, password, out int userId))
             {
-                string Username = Account.GetUserName(userId);
-                int expirationTime = 7;
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(
-                    "jDv3wF1oZTcX7rEm5qHlA4N8kGyS9iP2uWbO6sYtLxKzJgRnU0fDpVQeCbIaMh");
-                var tokenDescriptor = new SecurityTokenDescriptor
-                {
-                    Subject = new ClaimsIdentity(new[]
-                    {
-                    new Claim("Email", Email),
-                    new Claim("Name", Username),
-                    new Claim("Id", userId.ToString())
-                }),
-                    Expires = DateTime.UtcNow.AddDays(expirationTime),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
-                        SecurityAlgorithms.HmacSha256Signature)
-                };
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-                var tokenstring = tokenHandler.WriteToken(token);
-                Response.Cookies.Append("jwtToken", tokenstring, new CookieOptions
-                {
-                    Expires = DateTime.UtcNow.AddDays(expirationTime),
-                    HttpOnly = true //Cookie can only be found in an http request
-                });
+                GenerateAndSetJwtToken(Email, userId);
                 List<House> houses = houseService.GetAllHouses();
-
                 ViewBag.SellerId = userId;
                 return View("~/Views/Home/Index.cshtml", new HouseViewModel(houses));
             }
+
             return View();
         }
 
-        [HttpPost]
-        public IActionResult Aanmaak(string name, string email, string password, string repeatedpassword, bool checkboxForRent, bool? companyRent)
+
+        private void GenerateAndSetJwtToken(string email, int userId)
         {
-            if (password == repeatedpassword)
+            int expirationTime = 7;
+            Response.Cookies.Append("jwtToken", userService.GetTokenInformation(email,userId), new CookieOptions
             {
-
-                string hashedPassword = Account.HashPassword(password);
-                try
-                {
-                    User user = new User(name, email, hashedPassword, checkboxForRent, companyRent);
-                    Account.AddAccount(user);
-                }
-                catch (Exception ex) { }
-
-                return View("~/Views/Account/Login.cshtml");
-            }
-            else
-            {
-                return View();
-            }
+                Expires = DateTime.UtcNow.AddDays(expirationTime),
+                HttpOnly = true 
+            });
         }
+
+
+        [HttpPost]
+        public IActionResult Create(RegistrationViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.Password == model.RepeatedPassword)
+                {
+                    string hashedPassword = Account.HashPassword(model.Password);
+                    try
+                    {
+                        User user = new User(model.Name, model.Email, hashedPassword, model.CheckboxForRent, model.CompanyRent);
+                        Account.AddAccount(user);
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+
+                    return View("~/Views/Account/Login.cshtml");
+                }
+            }
+            return View("~/Views/Account/Login.cshtml");
+        }
+
         [HttpPost]
         public IActionResult Logout()
         {
