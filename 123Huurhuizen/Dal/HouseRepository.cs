@@ -1,6 +1,6 @@
 ﻿using Logic;
+using Logic.dtos;
 using Logic.interfaces;
-using Logic.models;
 using MySqlConnector;
 using System;
 using System.Collections.Generic;
@@ -130,13 +130,13 @@ namespace Dal
                 connection.Close();
             }
         }
-        public bool UpdateHouse(int houseId, double rentPerMonth, DateTime availableAt)
+        public bool UpdateHouse(UpdateHouseDto updateHouseDto)
         {
             MySqlConnection connection = new MySqlConnection(constring);
             try
             {
                 connection.Open();
-                string updateHouseQuery = $"UPDATE house SET price = '{rentPerMonth}', rentalStartTime = '{availableAt.ToString("yyyy-MM-dd")}' WHERE id = {houseId};";
+                string updateHouseQuery = $"UPDATE house SET price = '{updateHouseDto.RentPerMonth}', rentalStartTime = '{updateHouseDto.AvailableAt.ToString("yyyy-MM-dd")}' WHERE id = {updateHouseDto.HouseId};";
                 MySqlCommand updateCommand = new MySqlCommand(updateHouseQuery, connection);
                 int rowsAffected = updateCommand.ExecuteNonQuery();
 

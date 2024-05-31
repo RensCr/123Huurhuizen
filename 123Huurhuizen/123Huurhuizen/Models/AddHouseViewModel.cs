@@ -1,7 +1,7 @@
-﻿namespace _123Huurhuizen.Models
+﻿namespace Models
 {
     public class AddHouseViewModel
-{
+    {
         public string Location { get; set; }
         public DateTime Date { get; set; }
         public double Price { get; set; }

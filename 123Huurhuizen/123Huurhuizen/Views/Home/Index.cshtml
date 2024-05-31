@@ -1,4 +1,6 @@
-﻿@model HouseViewModel
+﻿
+@model HouseViewModel
+
 @{
     ViewData["Title"] = "123Huurhuizen";
 }
@@ -7,8 +9,6 @@
 
 <div class="text-center">
     <div class="container">
-        <!-- Add margin-bottom to the row -->
-        <a asp-controller="Home" asp-action="AddHouse" class="btn btn-primary plus-btn"><i class="fas fa-plus"></i></a>
         <div class="row mb-4">
             @foreach (var house in Model.Houses )       {
                 <div class="col-md-3">
@@ -84,7 +84,7 @@
                                 // Verwijder het huis uit de DOM
                                 $this.closest(".col-md-3").remove();
                             } else {
-                                // Foutmelding weergeven
+
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Er ging iets mis',

@@ -2,8 +2,9 @@
 using System.IdentityModel.Tokens.Jwt;
 using Logic;
 using Microsoft.IdentityModel.Tokens;
+using Logic.interfaces;
 
-namespace _123Huurhuizen.Controllers
+namespace JwtToken
 {
     public class Logincheck
     {
@@ -37,8 +38,9 @@ namespace _123Huurhuizen.Controllers
                     // Token is valid
                     return true;
                 }
-                catch (SecurityTokenException error) { 
-                
+                catch (SecurityTokenException error)
+                {
+
 
                     return false;
                 }
@@ -46,6 +48,7 @@ namespace _123Huurhuizen.Controllers
 
             return false;
         }
+
         public int GetSellerId(HttpRequest request)
         {
             int Id = -1;

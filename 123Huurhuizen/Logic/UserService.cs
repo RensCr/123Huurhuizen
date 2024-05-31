@@ -1,5 +1,5 @@
 ﻿using Logic.interfaces;
-using Logic.models;
+using Logic.dtos;
 using System.Diagnostics.Contracts;
 using System.Security.Claims;
 using System.Text;
@@ -9,17 +9,14 @@ using System.IdentityModel.Tokens.Jwt;
 
 namespace Logic
 {
-    public class UserService
+    public class UserService : IUserService
     {
-        public UserService(IUserRepository userRepository) 
+        private Account account;
+
+        public bool TryAuthenticateUser(LoginDto loginDto, out int userId)
         {
-        Account = new Account(userRepository);
-        }
-        private Account Account;
-        public bool TryAuthenticateUser(string email, string password, out int userId)
-        {
-            string hashedPassword = Account.HashPassword(password);
-            if (Account.IsValidUser(email, hashedPassword, out userId))
+            string hashedPassword = account.HashPassword(loginDto.Password);
+            if (account.IsValidUser(loginDto.Email, hashedPassword, out userId))
             {
                 return true;
             }
@@ -27,7 +24,7 @@ namespace Logic
         }
         public string GetTokenInformation(string email, int userId)
         {
-            string username = Account.GetUserName(userId);
+            string username = account.GetUserName(userId);
             int expirationTime = 7;
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes("jDv3wF1oZTcX7rEm5qHlA4N8kGyS9iP2uWbO6sYtLxKzJgRnU0fDpVQeCbIaMh"); // Replace with your secret key
@@ -47,5 +44,6 @@ namespace Logic
             var tokenstring = tokenHandler.WriteToken(token);
             return tokenstring;
         }
+
     }
 }

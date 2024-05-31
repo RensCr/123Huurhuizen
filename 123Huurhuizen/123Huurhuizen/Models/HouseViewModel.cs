@@ -1,6 +1,6 @@
-﻿using Logic.models;
+﻿using Logic.dtos;
 
-namespace _123Huurhuizen.Models
+namespace Models
 {
     public class HouseViewModel
     {
@@ -8,7 +8,7 @@ namespace _123Huurhuizen.Models
 
         public HouseViewModel(List<House> houses)
         {
-            this.Houses = houses;
+            Houses = houses;
         }
     }
 

@@ -1,13 +1,13 @@
-﻿using Logic.interfaces;
-using Logic.models;
+﻿using Logic.dtos;
+using Logic.interfaces;
 
 
 namespace Logic
 {
-    public class HouseService
+    public class HouseService : IHouseService
     {
         private readonly IHouseRepository _houseRepository;
-        public HouseService(IHouseRepository houseRepository) 
+        public HouseService(IHouseRepository houseRepository)
         {
             this._houseRepository = houseRepository;
         }
@@ -20,7 +20,7 @@ namespace Logic
 
         public bool DeleteHouse(int houseId) => _houseRepository.DeleteHouse(houseId);
 
-        public bool UpdateHouse(int houseId, double rentPerMonth, DateTime availableAt) => _houseRepository.UpdateHouse(houseId, rentPerMonth, availableAt);
+        public bool UpdateHouse(UpdateHouseDto updateHouseDto) => _houseRepository.UpdateHouse(updateHouseDto);
     }
 }
     

@@ -1,28 +1,30 @@
-using _123Huurhuizen.Models;
 
+using JwtToken;
 using Logic;
 using Logic.dtos;
 using Logic.interfaces;
-using Logic.models;
 using Microsoft.AspNetCore.Mvc;
+using Models;
 using System.Diagnostics;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
-namespace _123Huurhuizen.Controllers
+namespace Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
         private readonly Logincheck
             logincheck = new(); //Make sure to use this in all Http methods to check if the user is logged in
-
-        public HomeController(ILogger<HomeController> logger,IHouseRepository houseRepository)
+        private  IHouseService houseService;
+        private IAccount account;
+        public HomeController(ILogger<HomeController> logger,IHouseService houseService,IAccount account)
         {
             _logger = logger;
-            this.houseService = new HouseService(houseRepository);
+            this.houseService = houseService;
+            this.account = account;
         }
-        private readonly HouseService houseService;
+
         public IActionResult Index()
         {
             List<House> houses = houseService.GetAllHouses();
@@ -46,11 +48,14 @@ namespace _123Huurhuizen.Controllers
         }
         public IActionResult AddHouse()
         {
-            if (!logincheck.CheckValidJwtToken(Request))
+            if (logincheck.CheckValidJwtToken(Request) )
             {
-                return View("~/Views/Account/Login.cshtml");
+                if (account.IsUserSeller(logincheck.GetSellerId(Request)))
+                {
+                    return View();
+                }
             }
-            return View();
+            return View("~/Views/Account/Login.cshtml");
         }
         [HttpPost]
         public IActionResult AddHouse(AddHouseViewModel model)
@@ -60,8 +65,8 @@ namespace _123Huurhuizen.Controllers
                 int createdHouseId = houseService.AddHouse(CreateHouseInformation(model));
                 houseService.AddHousePictures(createdHouseId, PhotoPublisher(model.photos));
 
-                return RedirectToAction("Index"); 
-            }
+                return RedirectToAction("Index");
+            } 
             return View(model);
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -78,7 +83,8 @@ namespace _123Huurhuizen.Controllers
         [HttpPost]
         public ActionResult UpdateHouse(int houseId, double rentPerMonth, DateTime availableAt)
         {
-            bool result = houseService.UpdateHouse(houseId,rentPerMonth,availableAt);
+            UpdateHouseDto updatedHouseDto = new UpdateHouseDto(houseId, rentPerMonth, availableAt);
+            bool result = houseService.UpdateHouse(updatedHouseDto);
             return Json(new { success = result });
         }
 

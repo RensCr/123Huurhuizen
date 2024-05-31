@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using System.Security.Cryptography;
 using Logic.interfaces;
-using Logic.models;
+using Logic.dtos;
 
 namespace Logic
 {
-    public class Account
+    public class Account : IAccount
     {
         private readonly IUserRepository _userRepository;
-        public Account(IUserRepository userRepository) 
+        public Account(IUserRepository userRepository)
         {
             this._userRepository = userRepository;
         }
+
         public string HashPassword(string password)
         {
             using SHA256 sha256 = SHA256.Create();
@@ -32,7 +29,7 @@ namespace Logic
 
         public bool AddAccount(User user)
         {
-            try 
+            try
             {
                 _userRepository.CreateAccount(user);
                 return true;
@@ -42,9 +39,10 @@ namespace Logic
                 return false;
             }
         }
-        public bool IsValidUser(string email, string hashedPassword ,out int userId)
+
+        public bool IsValidUser(string email, string hashedPassword, out int userId)
         {
-            if (_userRepository.CheckIfUserExist(email, hashedPassword,out int user))
+            if (_userRepository.CheckIfUserExist(email, hashedPassword, out int user))
             {
                 userId = user;
                 return true;
@@ -56,16 +54,14 @@ namespace Logic
             }
 
         }
+
         public string GetUserName(int userId)
         {
             string UserName = _userRepository.GetUserName(userId);
             return UserName;
         }
 
-
-
-
-
+        public bool IsUserSeller(int id) => _userRepository.IsUserSeller(id);
 
     }
 }

@@ -1,32 +1,29 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Logic.interfaces;
 using Logic;
-using System.Security.Principal;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Logic.models;
-using _123Huurhuizen.Models;
+using Logic.dtos;
+using JwtToken;
+using Models;
 
-namespace _123Huurhuizen.Controllers
+namespace Controllers
 {
     public class AccountController : Controller
     {
         private readonly ILogger<HomeController> _logger;
         private readonly Logincheck
             logincheck = new(); //Make sure to use this in all Http methods to check if the user is logged in
+        private IAccount account;
+        private IHouseService houseService;
+        private IUserService userService;
 
-        public AccountController(ILogger<HomeController> logger,IUserRepository userRepository,IHouseRepository houseRepository)
+        public AccountController(ILogger<HomeController> logger, IUserService userService, IAccount account,IHouseService houseService)
         {
             _logger = logger;
-            Account = new Account(userRepository);
-            userService = new UserService(userRepository);
-            houseService = new HouseService(houseRepository);
+            this.account = account;
+            this.userService = userService;
+            this.houseService = houseService;
         }
-        private Account Account;
-        private HouseService houseService;
-        private UserService userService;
+
 
         public IActionResult Index()
         {
@@ -41,15 +38,16 @@ namespace _123Huurhuizen.Controllers
         {
             return View();
         }
+
         [HttpPost]
         public IActionResult Login(string Email, string password)
         {
-            if (userService.TryAuthenticateUser(Email, password, out int userId))
+            LoginDto loginDto = new LoginDto(Email, password);
+            if (userService.TryAuthenticateUser(loginDto, out int userId))
             {
-                GenerateAndSetJwtToken(Email, userId);
-                List<House> houses = houseService.GetAllHouses();
+                GenerateAndSetJwtToken(loginDto.Email, userId);
                 ViewBag.SellerId = userId;
-                return View("~/Views/Home/Index.cshtml", new HouseViewModel(houses));
+                return RedirectToAction("Index", "Home");
             }
 
             return View();
@@ -59,10 +57,10 @@ namespace _123Huurhuizen.Controllers
         private void GenerateAndSetJwtToken(string email, int userId)
         {
             int expirationTime = 7;
-            Response.Cookies.Append("jwtToken", userService.GetTokenInformation(email,userId), new CookieOptions
+            Response.Cookies.Append("jwtToken", userService.GetTokenInformation(email, userId), new CookieOptions
             {
                 Expires = DateTime.UtcNow.AddDays(expirationTime),
-                HttpOnly = true 
+                HttpOnly = true
             });
         }
 
@@ -74,11 +72,11 @@ namespace _123Huurhuizen.Controllers
             {
                 if (model.Password == model.RepeatedPassword)
                 {
-                    string hashedPassword = Account.HashPassword(model.Password);
+                    string hashedPassword = account.HashPassword(model.Password);
                     try
                     {
                         User user = new User(model.Name, model.Email, hashedPassword, model.CheckboxForRent, model.CompanyRent);
-                        Account.AddAccount(user);
+                        account.AddAccount(user);
                     }
                     catch (Exception ex)
                     {

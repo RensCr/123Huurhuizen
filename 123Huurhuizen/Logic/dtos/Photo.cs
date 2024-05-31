@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Logic.models
+namespace Logic.dtos
 {
     public class Photo
     {
-        public int Id {  get; set; }
-        public string PhotoLink {  get; set; }
-        public Photo(int id, string photolink) 
-        { 
+        public int Id { get; set; }
+        public string PhotoLink { get; set; }
+        public Photo(int id, string photolink)
+        {
             Id = id;
             PhotoLink = photolink;
         }
