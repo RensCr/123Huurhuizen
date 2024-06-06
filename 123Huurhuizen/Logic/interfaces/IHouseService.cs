@@ -9,5 +9,6 @@ namespace Logic.interfaces
         bool DeleteHouse(int houseId);
         List<House> GetAllHouses();
         bool UpdateHouse(UpdateHouseDto updateHouseDto);
+        public List<Properties> GetAvailableProperties();
     }
 }

@@ -1,4 +1,5 @@
 
+
 using JwtToken;
 using Logic;
 using Logic.dtos;
@@ -52,7 +53,8 @@ namespace Controllers
             {
                 if (account.IsUserSeller(logincheck.GetSellerId(Request)))
                 {
-                    return View();
+                    List<Properties> AvailableProperties = houseService.GetAvailableProperties();
+                    return View(new AddHouseInformationViewModel(AvailableProperties));
                 }
             }
             return View("~/Views/Account/Login.cshtml");

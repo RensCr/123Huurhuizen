@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@model AddHouseInformationViewModel
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -22,14 +23,125 @@
 
         <label for="photos">Foto uploaden:</label>
         <input type="file" id="photos" name="Photos" accept=".png, .jpg" multiple onchange="displaySelectedFile(this.files)">
+        <div id="selectedProperties">
+            <div class="property-input">
+                <span>Huiseigenschappen:</span>
+                <button type="button" onclick="addPropertyInput()">+</button>
+            </div>
+        </div>
 
         <div id="selectedFiles"></div><br><br>
 
         <input type="submit" value="Verzenden">
     </form>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.0.18/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.0.18/sweetalert2.min.css">
 
     <script>
+        var selectedProperties = [];
+
+        function addPropertyInput() {
+            var selectedPropertiesDiv = document.getElementById("selectedProperties");
+
+            // Create container for the new property input
+            var propertyInputDiv = document.createElement("div");
+            propertyInputDiv.classList.add("property-input");
+
+            // Create select for property
+            var propertySelect = document.createElement("select");
+            propertySelect.classList.add("property-select");
+            propertySelect.onchange = function () {
+                createQuantityInput(this, propertyInputDiv);
+            };
+
+            // Create option for selected property
+            var defaultOption = document.createElement("option");
+            defaultOption.value = "";
+            defaultOption.text = "Selecteer een property";
+            defaultOption.disabled = true;
+            defaultOption.selected = true;
+            propertySelect.appendChild(defaultOption);
+
+            // Add options for available properties
+            var hasOptions = false;
+        @foreach (var property in Model.AvailableProperties)
+        {
+            <text>
+                            if (!selectedProperties.includes("@property.Name")) {
+                    var option = document.createElement("option");
+                    option.value = "@property.Id";
+                    option.text = "@property.Name";
+                    propertySelect.appendChild(option);
+                    hasOptions = true;
+                }
+            </text>
+        }
+                            if (!hasOptions) {
+                                addButton.remove();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Alle beschikbare properties zijn gebruikt',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+
+                // Append select to propertyInputDiv
+                propertyInputDiv.appendChild(propertySelect);
+
+            // Append propertyInputDiv to selectedProperties div
+            selectedPropertiesDiv.appendChild(propertyInputDiv);
+
+            // Hide add property button if no options available
+            var addButton = document.getElementById("addPropertyButton");
+            addButton.style.display = hasOptions ? "inline-block" : "none";
+        }
+
+        function createQuantityInput(selectElement, propertyInputDiv) {
+            var selectedPropertyId = selectElement.value;
+            var selectedPropertyName = selectElement.options[selectElement.selectedIndex].text;
+
+            // Remove existing quantity input and delete button, if any
+            var existingQuantityInput = propertyInputDiv.querySelector(".quantity-input");
+            var existingDeleteButton = propertyInputDiv.querySelector(".delete-button");
+            if (existingQuantityInput) {
+                existingQuantityInput.remove();
+            }
+            if (existingDeleteButton) {
+                existingDeleteButton.remove();
+            }
+
+            // Create input field for property quantity
+            var quantityInput = document.createElement("input");
+            quantityInput.classList.add("quantity-input");
+            quantityInput.type = "number";
+            quantityInput.name = "PropertyQuantities[" + selectedPropertyId + "]";
+            quantityInput.placeholder = "Aantal";
+
+            // Create delete button for quantity input
+            var deleteButton = document.createElement("button");
+            deleteButton.classList.add("delete-button");
+            deleteButton.textContent = "🗑️";
+            deleteButton.type = "button";
+            deleteButton.onclick = function () {
+                propertyInputDiv.remove();
+                selectedProperties = selectedProperties.filter(item => item !== selectedPropertyName);
+                // Show add property button when removing property
+                var addButton = document.getElementById("addPropertyButton");
+                addButton.style.display = "inline-block";
+            };
+
+            // Append inputs to propertyInputDiv
+            propertyInputDiv.appendChild(quantityInput);
+            propertyInputDiv.appendChild(deleteButton);
+
+            selectedProperties.push(selectedPropertyName);
+
+            // Hide add property button if no options available
+            var addButton = document.getElementById("addPropertyButton");
+            addButton.style.display = "none";
+        }
+
         // JavaScript voor validatie en instellen van de tijd
         function validateForm() {
             var locationInput = document.getElementById("location").value;

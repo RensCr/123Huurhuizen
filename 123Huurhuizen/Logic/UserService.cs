@@ -11,7 +11,11 @@ namespace Logic
 {
     public class UserService : IUserService
     {
-        private Account account;
+        private IAccount account;
+        public UserService(IAccount account)
+        {
+            this.account = account;
+        }
 
         public bool TryAuthenticateUser(LoginDto loginDto, out int userId)
         {

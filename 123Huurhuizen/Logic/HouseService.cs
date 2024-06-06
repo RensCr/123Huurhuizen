@@ -21,6 +21,7 @@ namespace Logic
         public bool DeleteHouse(int houseId) => _houseRepository.DeleteHouse(houseId);
 
         public bool UpdateHouse(UpdateHouseDto updateHouseDto) => _houseRepository.UpdateHouse(updateHouseDto);
+        public List<Properties> GetAvailableProperties() => _houseRepository.GetAvailableProperties();
     }
 }
     

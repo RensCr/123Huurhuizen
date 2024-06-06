@@ -154,6 +154,39 @@ namespace Dal
                 connection.Close();
             }
         }
+        public List<Properties> GetAvailableProperties()
+        {
+            List<Properties> properties = new List<Properties>();
+
+            MySqlConnection connection = new MySqlConnection(constring);
+            try
+            {
+                connection.Open();
+                string getHouseQuery = "SELECT * FROM property;";
+                MySqlCommand command = new MySqlCommand(getHouseQuery, connection);
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    {
+                        while (reader.Read())
+                        {
+                            int id = reader.GetInt32("id");
+                            string name = reader.GetString("Name");
+                            properties.Add(new Properties(id, name));
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+            return properties;
+        }
 
 
 
