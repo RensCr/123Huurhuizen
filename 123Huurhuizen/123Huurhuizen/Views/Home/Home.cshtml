@@ -1,4 +1,4 @@
-﻿
+﻿@model HouseInformationViewModel;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,47 +38,52 @@
     <div class="container mt-5">
         <!-- Fotogalerij -->
         <div id="fotogalerij" class="row">
-            <div class="col-md-5">
-                <a data-fancybox="gallery" href="~/Images/testhuis.jpg" data-caption="Buitenkant huis1">
-                    <img src="~/Images/testhuis.jpg" class="img-fluid" alt="Buitenkant huis1">
-                </a>
-            </div>
-            <div class="col-md-5 ">
-                <div class="row">
-                    <div class="col-md-6">
-                        <a data-fancybox="gallery" href="~/Images/testhuis.jpg" data-caption="Interieur huis2">
-                            <img src="~/Images/testhuis.jpg" class="img-fluid" alt="Interieur huis2">
-                        </a>
-                    </div>
-                    <div class="col-md-6">
-                        <a data-fancybox="gallery" href="~/Images/testhuis.jpg" data-caption="Huis in de avond3">
-                            <img src="~/Images/testhuis.jpg" class="img-fluid" alt="Huis in de avond3" >
-                        </a>
-                    </div>
-                </div>
-                <div class="row mt-3">
-                    <div class="col-md-6">
-                        <a data-fancybox="gallery" href="~/Images/testhuis.jpg" data-caption="Interieur huis4">
-                            <img src="~/Images/testhuis.jpg" class="img-fluid" alt="Interieur huis4">
-                        </a>
-                    </div>
-                    <div class="col-md-6">
-                        <a data-fancybox="gallery" href="~/Images/testhuis.jpg" data-caption="Huis in de avond5">
-                            <img src="~/Images/testhuis.jpg" class="img-fluid" alt="Huis in de avond">
-                        </a>
-                    </div>
-                    <div class="col-md-6">
-                        <a data-fancybox="gallery" href="~/Images/testhuis.jpg" data-caption="Huis in de avond6">
+            @{
+                int photoindex = 0;
+                bool isused = false;
+            }
 
-                        </a>
-                    </div>
-                    <div class="col-md-6">
-                        <a data-fancybox="gallery" href="~/Images/testhuis.jpg" data-caption="Huis in de avond7">
-                        </a>
+            @if (Model.Housenformation.HousePhotos.Any())
+            {
+                <div class="col-md-5">
+                    <div class="row">
+                        @foreach (var photo in Model.Housenformation.HousePhotos)
+                        {
+                            @if (photoindex == 0)
+                            {
+                                <div style="width:32.6em">
+                                    <a data-fancybox="gallery" href="@photo.PhotoLink">
+                                        <img src="@photo.PhotoLink" class="img-fluid">
+                                    </a>
+                                </div>
+                                photoindex++;
+                            }
+                            else if (photoindex < 5)
+                            {
+                                @if (photoindex == 1)
+                                {
+                                    @Html.Raw("</div></div><div class='col-md-5'><div class='row'>")
+                                }
+                                <div class="col-md-6">
+                                    <a data-fancybox="gallery" href="@photo.PhotoLink" >
+                                        <img src="@photo.PhotoLink" class="img-fluid">
+                                    </a>
+                                </div>
+                                photoindex++;
+                            }
+                            else
+                            {
+                                <a data-fancybox="gallery" href="@photo.PhotoLink">
+                                    
+                                </a>
+                            }
+                        }
                     </div>
                 </div>
-            </div>
+            }
         </div>
+    </div>
+
 
         <!-- Locatie en details -->
         <div class="row mt-4">
@@ -89,11 +94,11 @@
             </div>
             <div class="col-md-4">
                 <div class="info-box bg-light p-3">
-                    <h3>Eindhoven centrum, Nederland</h3>
-                    <p><strong>Huur:</strong> €2.3K per maand</p>
-                    <p><strong>Slaapkamers:</strong> 3</p>
-                    <p><strong>Beschikbaar vanaf:</strong> 01-09-2024</p>
-                    <!-- Voeg meer details toe zoals gewenst -->
+                <h3>@Model.Housenformation.Location</h3>
+                <p><strong>Huur:</strong> €@Model.Housenformation.PricePerMonth per maand</p>
+                <p><strong>Soort verhuurder</strong> @Model.Housenformation.SortRenter</p>
+                <p><strong>Naam verhuurder</strong> @Model.Housenformation.RenterName</p>
+                <p><strong>Beschikbaar vanaf:</strong> @Model.Housenformation.RentalStartTime.ToString("dd-MM-yyyy")</p>
                 </div>
             </div>
         </div>
@@ -103,8 +108,20 @@
             <div class="col">
                 <div class="info-sectie bg-light p-3">
                     <h4>Informatie</h4>
-                    <p>Hier komt een huisadvertentietekst</p>
-                    <!-- Voeg meer informatie toe zoals gewenst -->
+                <p>@Model.Housenformation.HouseInformation</p>
+                @foreach (var property in Model.Housenformation.SelectedProperties)
+                {
+                    if (property.Quantity < 2)
+                    {
+                        <p>Er is @property.Quantity @property.Name</p>
+
+                    }
+                    else
+                    {
+                        <p>Er zijn @property.Quantity @property.Name</p>
+                    }
+
+                }
                 </div>
             </div>
         </div>

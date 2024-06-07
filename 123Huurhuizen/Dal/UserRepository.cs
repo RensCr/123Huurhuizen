@@ -5,7 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using MySqlConnector;
 using Logic.interfaces;
-using Logic.models;
+using Logic.dtos;
+using System.Xml.Linq;
 
 namespace Dal
 {
@@ -103,5 +104,27 @@ namespace Dal
 
             return name;
         }
+        public bool IsUserSeller(int id)
+        {
+            bool isUserSeller = false;
+            MySqlConnection connection = new MySqlConnection(constring);
+            try
+            {
+                connection.Open();
+                string CheckUserExistQuery = $"SELECT COUNT(*) FROM user WHERE id = {id} AND typeUser = 'Seller';";
+                MySqlCommand mySqlCommand = new MySqlCommand(CheckUserExistQuery, connection);
+                int count = Convert.ToInt32(mySqlCommand.ExecuteScalar());
+                if (count > 0)
+                {
+                    isUserSeller = true;
+                }
+            }
+            finally
+            {
+                connection.Close();
+            }
+            return isUserSeller;
+        }
+
     }
 }

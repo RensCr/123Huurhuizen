@@ -7,7 +7,7 @@ using Imgur.API.Authentication;
 using Imgur.API.Endpoints;
 using Imgur.API.Models;
 using Imgur.API;
-using Logic.models;
+using Logic.dtos;
 
 namespace Logic
 {

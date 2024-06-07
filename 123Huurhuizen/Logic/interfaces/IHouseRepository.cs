@@ -1,4 +1,4 @@
-﻿using Logic.models;
+﻿using Logic.dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +13,10 @@ namespace Logic.interfaces
         public bool AddHousePictures(int HouseId, List<string> Photolinks);
         public List<House> GetAllHouses();
         public bool DeleteHouse(int houseId);
-        public bool UpdateHouse(int houseId, double rentPerMonth, DateTime availableAt);
+        public bool UpdateHouse(UpdateHouseDto updateHouseDto);
+        public List<Properties> GetAvailableProperties();
+        public bool SetHouseProperties(int houseId, List<ChosenProperties> chosenProperties);
+        public HouseInformationOverview GetHouseInformationOverview(int houseId);
+        public bool checkIfHouseExist(int houseId);
     }
 }

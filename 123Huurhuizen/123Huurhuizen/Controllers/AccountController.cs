@@ -1,27 +1,29 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Dal;
 using Logic.interfaces;
 using Logic;
-using System.Security.Principal;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Logic.models;
-using _123Huurhuizen.Models;
+using Logic.dtos;
+using JwtToken;
+using Models;
 
-namespace _123Huurhuizen.Controllers
+namespace Controllers
 {
     public class AccountController : Controller
     {
         private readonly ILogger<HomeController> _logger;
         private readonly Logincheck
             logincheck = new(); //Make sure to use this in all Http methods to check if the user is logged in
+        private IAccount account;
+        private IHouseService houseService;
+        private IUserService userService;
 
-        public AccountController(ILogger<HomeController> logger)
+        public AccountController(ILogger<HomeController> logger, IUserService userService, IAccount account,IHouseService houseService)
         {
             _logger = logger;
+            this.account = account;
+            this.userService = userService;
+            this.houseService = houseService;
         }
+
 
         public IActionResult Index()
         {
@@ -36,70 +38,56 @@ namespace _123Huurhuizen.Controllers
         {
             return View();
         }
+
         [HttpPost]
         public IActionResult Login(string Email, string password)
         {
-            IUserRepository userDB = new UserRepository();
-            Account account = new Account();
-            string hashedPassword = account.HashPassword(password);
-            if (account.IsValidUser(Email, hashedPassword, userDB, out int userId))
+            LoginDto loginDto = new LoginDto(Email, password);
+            if (userService.TryAuthenticateUser(loginDto, out int userId))
             {
-                string Username = account.GetUserName(userId, userDB);
-                int expirationTime = 7;
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(
-                    "jDv3wF1oZTcX7rEm5qHlA4N8kGyS9iP2uWbO6sYtLxKzJgRnU0fDpVQeCbIaMh");
-                var tokenDescriptor = new SecurityTokenDescriptor
-                {
-                    Subject = new ClaimsIdentity(new[]
-                    {
-                    new Claim("Email", Email),
-                    new Claim("Name", Username),
-                    new Claim("Id", userId.ToString())
-                }),
-                    Expires = DateTime.UtcNow.AddDays(expirationTime),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
-                        SecurityAlgorithms.HmacSha256Signature)
-                };
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-                var tokenstring = tokenHandler.WriteToken(token);
-                Response.Cookies.Append("jwtToken", tokenstring, new CookieOptions
-                {
-                    Expires = DateTime.UtcNow.AddDays(expirationTime),
-                    HttpOnly = true //Cookie can only be found in an http request
-                });
-                IHouseRepository houseRepository = new HouseRepository();
-                List<House> houses = houseRepository.GetAllHouses();
-
+                GenerateAndSetJwtToken(loginDto.Email, userId);
                 ViewBag.SellerId = userId;
-                return View("~/Views/Home/Index.cshtml", new HouseViewModel(houses));
+                return RedirectToAction("Index", "Home");
             }
+
             return View();
         }
 
-        [HttpPost]
-        public IActionResult Aanmaak(string name, string email, string password, string repeatedpassword, bool checkboxForRent, bool? companyRent)
+
+        private void GenerateAndSetJwtToken(string email, int userId)
         {
-            if (password == repeatedpassword)
+            int expirationTime = 7;
+            Response.Cookies.Append("jwtToken", userService.GetTokenInformation(email, userId), new CookieOptions
             {
-                IUserRepository userDB = new UserRepository();
-                Account account = new Account();
-
-                string hashedPassword = account.HashPassword(password);
-                try
-                {
-                    User user = new User(name, email, hashedPassword, checkboxForRent, companyRent);
-                    account.AddAccount(user, userDB);
-                }
-                catch (Exception ex) { }
-
-                return View("~/Views/Account/Login.cshtml");
-            }
-            else
-            {
-                return View();
-            }
+                Expires = DateTime.UtcNow.AddDays(expirationTime),
+                HttpOnly = true
+            });
         }
+
+
+        [HttpPost]
+        public IActionResult Create(RegistrationViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.Password == model.RepeatedPassword)
+                {
+                    string hashedPassword = account.HashPassword(model.Password);
+                    try
+                    {
+                        User user = new User(model.Name, model.Email, hashedPassword, model.CheckboxForRent, model.CompanyRent);
+                        account.AddAccount(user);
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+
+                    return View("~/Views/Account/Login.cshtml");
+                }
+            }
+            return View("~/Views/Account/Login.cshtml");
+        }
+
         [HttpPost]
         public IActionResult Logout()
         {

@@ -8,6 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="Imgur.API" Version="5.0.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="models\" />
   </ItemGroup>
 
 </Project>

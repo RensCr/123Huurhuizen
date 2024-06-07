@@ -1,77 +1,84 @@
-using _123Huurhuizen.Models;
-using Dal;
+
+
+using JwtToken;
 using Logic;
+using Logic.dtos;
 using Logic.interfaces;
-using Logic.models;
 using Microsoft.AspNetCore.Mvc;
+using Models;
 using System.Diagnostics;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
-namespace _123Huurhuizen.Controllers
+namespace Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
         private readonly Logincheck
             logincheck = new(); //Make sure to use this in all Http methods to check if the user is logged in
-
-        public HomeController(ILogger<HomeController> logger)
+        private  IHouseService houseService;
+        private IAccount account;
+        public HomeController(ILogger<HomeController> logger,IHouseService houseService,IAccount account)
         {
             _logger = logger;
+            this.houseService = houseService;
+            this.account = account;
         }
 
         public IActionResult Index()
         {
-            IHouseRepository houseRepository = new HouseRepository();
-            List<House> houses = houseRepository.GetAllHouses();
+            List<House> houses = houseService.GetAllHouses();
             int SellerId = logincheck.GetSellerId(Request);
             ViewBag.SellerId = SellerId;
-            return View(new HouseViewModel(houses));
+            return View(new HouseOverviewViewModel(houses));
+
         }
 
         public IActionResult Privacy()
         {
             return View();
         }
-        public IActionResult Home()
+        public IActionResult Home(int id)
         {
             if (!logincheck.CheckValidJwtToken(Request))
             {
+
                 return View("~/Views/Account/Login.cshtml");
             }
-            return View();
+            if (houseService.checkIfHouseExist(id))
+            {
+                return View(new HouseInformationViewModel(houseService.GetHouseInformationOverview(id)));
+            }
+            return RedirectToAction("index");
         }
         public IActionResult AddHouse()
         {
-            if (!logincheck.CheckValidJwtToken(Request))
+            if (logincheck.CheckValidJwtToken(Request) )
             {
-                return View("~/Views/Account/Login.cshtml");
+                if (account.IsUserSeller(logincheck.GetSellerId(Request)))
+                {
+                    List<Properties> AvailableProperties = houseService.GetAvailableProperties();
+                    return View(new AddHouseInformationViewModel(AvailableProperties));
+                }
             }
-            return View();
+            return View("~/Views/Account/Login.cshtml");
         }
         [HttpPost]
-        public IActionResult Addhouse(string location, DateTime date, double price,string information, List<IFormFile> photos)
+        public IActionResult AddHouse(AddHouseViewModel model)
         {
-            PhotoPublisher publisher = new PhotoPublisher();
-            List<string> PhotosLink = new List<string>();
-            foreach (var photo in photos)
+            if (ModelState.IsValid)
             {
-                byte[] imageData;
-                using (var memoryStream = new MemoryStream())
-                {
-                    photo.CopyTo(memoryStream);
-                    imageData = memoryStream.ToArray();
-                }
-                string photolink = publisher.UploadImage(imageData);
-                PhotosLink.Add(photolink);
+                int createdHouseId = houseService.AddHouse(CreateHouseInformation(model));
+                houseService.AddHousePictures(createdHouseId, PhotoPublisher(model.photos));
+                houseService.SetHouseProperties(createdHouseId, model.Properties);
+
+                // Redirect naar de Home-actie met het meegegeven ID
+                return RedirectToAction("Home", new { id = createdHouseId });
             }
-            HouseInformation houseInfo = new HouseInformation(logincheck.GetSellerId(Request),location, price, date.Date, information);
-            IHouseRepository houseRepository = new HouseRepository();
-            int createdHouseId = houseRepository.AddHouse(houseInfo);
-            houseRepository.AddHousePictures(createdHouseId, PhotosLink);
-            return View();
+            return View(model);
         }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
@@ -80,16 +87,45 @@ namespace _123Huurhuizen.Controllers
         [HttpPost]
         public ActionResult DeleteHouse(int houseId)
         {
-            IHouseRepository houseRepository= new HouseRepository();
-            bool result = houseRepository.DeleteHouse(houseId);
+            bool result = houseService.DeleteHouse(houseId);
             return Json(new { success = result });
         }
         [HttpPost]
         public ActionResult UpdateHouse(int houseId, double rentPerMonth, DateTime availableAt)
         {
-            IHouseRepository houseRepository = new HouseRepository();
-            bool result = houseRepository.UpdateHouse(houseId,rentPerMonth,availableAt);
+            UpdateHouseDto updatedHouseDto = new UpdateHouseDto(houseId, rentPerMonth, availableAt);
+            bool result = houseService.UpdateHouse(updatedHouseDto);
             return Json(new { success = result });
+        }
+
+        private HouseInformation CreateHouseInformation(AddHouseViewModel model)
+        {
+            return new HouseInformation(
+                logincheck.GetSellerId(Request),
+                model.Location,
+                model.Price,
+                model.Date,
+                model.Information
+            );
+        }
+
+        private List<string> PhotoPublisher(List<IFormFile> photos)
+        {
+            var publisher = new PhotoPublisher();
+            var photosLinks = new List<string>();
+
+            foreach (var photo in photos)
+            {
+                byte[] imageData;
+                using (var memoryStream = new MemoryStream())
+                {
+                    photo.CopyTo(memoryStream);
+                    imageData = memoryStream.ToArray();
+                }
+                string photoLink = publisher.UploadImage(imageData);
+                photosLinks.Insert(0,photoLink);
+            }
+            return photosLinks;
         }
     }
 }
