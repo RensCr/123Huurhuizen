@@ -2,11 +2,11 @@
 
 namespace Models
 {
-    public class HouseViewModel
+    public class HouseOverviewViewModel
     {
         public List<House> Houses { get; set; }
 
-        public HouseViewModel(List<House> houses)
+        public HouseOverviewViewModel(List<House> houses)
         {
             Houses = houses;
         }

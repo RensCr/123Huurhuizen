@@ -31,7 +31,7 @@ namespace Controllers
             List<House> houses = houseService.GetAllHouses();
             int SellerId = logincheck.GetSellerId(Request);
             ViewBag.SellerId = SellerId;
-            return View(new HouseViewModel(houses));
+            return View(new HouseOverviewViewModel(houses));
 
         }
 
@@ -39,13 +39,18 @@ namespace Controllers
         {
             return View();
         }
-        public IActionResult Home()
+        public IActionResult Home(int id)
         {
             if (!logincheck.CheckValidJwtToken(Request))
             {
+
                 return View("~/Views/Account/Login.cshtml");
             }
-            return View();
+            if (houseService.checkIfHouseExist(id))
+            {
+                return View(new HouseInformationViewModel(houseService.GetHouseInformationOverview(id)));
+            }
+            return RedirectToAction("index");
         }
         public IActionResult AddHouse()
         {
@@ -66,11 +71,14 @@ namespace Controllers
             {
                 int createdHouseId = houseService.AddHouse(CreateHouseInformation(model));
                 houseService.AddHousePictures(createdHouseId, PhotoPublisher(model.photos));
+                houseService.SetHouseProperties(createdHouseId, model.Properties);
 
-                return RedirectToAction("Index");
-            } 
+                // Redirect naar de Home-actie met het meegegeven ID
+                return RedirectToAction("Home", new { id = createdHouseId });
+            }
             return View(model);
         }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
@@ -115,7 +123,7 @@ namespace Controllers
                     imageData = memoryStream.ToArray();
                 }
                 string photoLink = publisher.UploadImage(imageData);
-                photosLinks.Add(photoLink);
+                photosLinks.Insert(0,photoLink);
             }
             return photosLinks;
         }

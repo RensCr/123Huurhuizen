@@ -1,4 +1,6 @@
-﻿namespace Models
+﻿using Logic.dtos;
+
+namespace Models
 {
     public class AddHouseViewModel
     {
@@ -7,5 +9,6 @@
         public double Price { get; set; }
         public string Information { get; set; }
         public List<IFormFile> photos { get; set; }
+        public List<ChosenProperties> Properties { get; set; }
     }
 }

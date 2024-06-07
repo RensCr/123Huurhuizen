@@ -22,6 +22,9 @@ namespace Logic
 
         public bool UpdateHouse(UpdateHouseDto updateHouseDto) => _houseRepository.UpdateHouse(updateHouseDto);
         public List<Properties> GetAvailableProperties() => _houseRepository.GetAvailableProperties();
+        public bool SetHouseProperties(int houseId, List<ChosenProperties> chosenProperties) => _houseRepository.SetHouseProperties(houseId, chosenProperties);
+        public HouseInformationOverview GetHouseInformationOverview(int houseId) => _houseRepository.GetHouseInformationOverview(houseId);
+        public bool checkIfHouseExist(int id) => _houseRepository.checkIfHouseExist(id);
     }
 }
     

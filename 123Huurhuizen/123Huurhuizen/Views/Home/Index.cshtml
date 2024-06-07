@@ -1,5 +1,5 @@
 ﻿
-@model HouseViewModel
+@model HouseOverviewViewModel
 
 @{
     ViewData["Title"] = "123Huurhuizen";
@@ -33,11 +33,17 @@
                                     <br />
                                     <button type="button" class="btn custom-btn btn-block saveButton">Opslaan</button>
                                 </form>
-                                <button type="button" class="btn custom-btn btn-block EigenhuisButton" >Eigen huis</button>
+                                <form asp-controller="Home" asp-action="Home" asp-route-id="@house.HouseId">
+                                    <button type="submit" class="btn custom-btn btn-block EigenhuisButton">Eigen huis</button>
+                                </form>
+
                             }
                             else
                             {
-                                <a href="#" class="btn custom-btn btn-block">Meer informatie</a>
+                                <form asp-controller="Home" asp-action="Home" asp-route-id="@house.HouseId">
+                                    <button type="submit" class="btn custom-btn btn-block">Meer informatie</button>
+                                </form>
+
                             }
 
                         </div>

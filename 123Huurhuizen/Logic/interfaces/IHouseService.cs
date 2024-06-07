@@ -10,5 +10,8 @@ namespace Logic.interfaces
         List<House> GetAllHouses();
         bool UpdateHouse(UpdateHouseDto updateHouseDto);
         public List<Properties> GetAvailableProperties();
+        public bool SetHouseProperties(int houseId, List<ChosenProperties> chosenProperties);
+        public HouseInformationOverview GetHouseInformationOverview(int houseId);
+        public bool checkIfHouseExist(int id);
     }
 }
