@@ -13,7 +13,7 @@ namespace Dal
     public class UserRepository : IUserRepository
     {
         private string constring = "Server=127.0.0.1;Port=3306;Database=123huizen;Uid=root;";
-        public bool CreateAccount(User user)
+        public bool CreateAccount(UserDto user)
         {
             MySqlConnection connection = new MySqlConnection(constring);
             try

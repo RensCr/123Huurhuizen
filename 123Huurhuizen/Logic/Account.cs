@@ -27,7 +27,7 @@ namespace Logic
             return builder.ToString();
         }
 
-        public bool AddAccount(User user)
+        public bool AddAccount(UserDto user)
         {
             try
             {

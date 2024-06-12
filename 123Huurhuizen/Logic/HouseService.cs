@@ -12,18 +12,18 @@ namespace Logic
             this._houseRepository = houseRepository;
         }
 
-        public List<House> GetAllHouses() => _houseRepository.GetAllHouses();
+        public List<HouseDto> GetAllHouses() => _houseRepository.GetAllHouses();
 
-        public int AddHouse(HouseInformation houseInfo) => _houseRepository.AddHouse(houseInfo);
+        public int AddHouse(AddHouseInformationDto houseInfo) => _houseRepository.AddHouse(houseInfo);
 
         public bool AddHousePictures(int HouseId, List<string> Photolinks) => _houseRepository.AddHousePictures(HouseId, Photolinks);
 
         public bool DeleteHouse(int houseId) => _houseRepository.DeleteHouse(houseId);
 
         public bool UpdateHouse(UpdateHouseDto updateHouseDto) => _houseRepository.UpdateHouse(updateHouseDto);
-        public List<Properties> GetAvailableProperties() => _houseRepository.GetAvailableProperties();
-        public bool SetHouseProperties(int houseId, List<ChosenProperties> chosenProperties) => _houseRepository.SetHouseProperties(houseId, chosenProperties);
-        public HouseInformationOverview GetHouseInformationOverview(int houseId) => _houseRepository.GetHouseInformationOverview(houseId);
+        public List<LoadPropertiesDto> GetAvailableProperties() => _houseRepository.GetAvailableProperties();
+        public bool SetHouseProperties(int houseId, List<ChosenPropertiesDto> chosenProperties) => _houseRepository.SetHouseProperties(houseId, chosenProperties);
+        public HouseInformationOverviewDto GetHouseInformationOverview(int houseId) => _houseRepository.GetHouseInformationOverview(houseId);
         public bool checkIfHouseExist(int id) => _houseRepository.checkIfHouseExist(id);
     }
 }

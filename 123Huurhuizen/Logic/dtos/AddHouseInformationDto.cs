@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Logic.dtos
 {
-    public class HouseInformation
+    public class AddHouseInformationDto
     {
         public int SellerId { get; set; }
         public string Location { get; set; }
@@ -15,7 +15,7 @@ namespace Logic.dtos
         public string HouseDescription { get; set; }
         public bool? Rented { get; set; }
 
-        public HouseInformation(int sellerId, string location, double price, DateTime rentalStart, string houseDescription, bool? rented = false)
+        public AddHouseInformationDto(int sellerId, string location, double price, DateTime rentalStart, string houseDescription, bool? rented = false)
         {
             SellerId = sellerId;
             Location = location;

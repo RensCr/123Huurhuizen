@@ -111,14 +111,14 @@
                 <p>@Model.Housenformation.HouseInformation</p>
                 @foreach (var property in Model.Housenformation.SelectedProperties)
                 {
-                    if (property.Quantity < 2)
+                    if (property.Amount < 2)
                     {
-                        <p>Er is @property.Quantity @property.Name</p>
+                        <p>Er is @property.Amount @property.Name</p>
 
                     }
                     else
                     {
-                        <p>Er zijn @property.Quantity @property.Name</p>
+                        <p>Er zijn @property.Amount @property.Name</p>
                     }
 
                 }

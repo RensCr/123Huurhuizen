@@ -75,7 +75,7 @@ namespace Controllers
                     string hashedPassword = account.HashPassword(model.Password);
                     try
                     {
-                        User user = new User(model.Name, model.Email, hashedPassword, model.CheckboxForRent, model.CompanyRent);
+                        UserDto user = new UserDto(model.Name, model.Email, hashedPassword, model.CheckboxForRent, model.CompanyRent);
                         account.AddAccount(user);
                     }
                     catch (Exception ex)

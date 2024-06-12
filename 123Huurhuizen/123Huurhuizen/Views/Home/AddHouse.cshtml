@@ -46,7 +46,7 @@
             var propertySelect = document.createElement("select");
             propertySelect.classList.add("property-select");
             propertySelect.onchange = function () {
-                createQuantityInput(this, propertyInputDiv);
+                createAmountInput(this, propertyInputDiv);
                 this.disabled = true;
             };
 
@@ -61,10 +61,11 @@
         @foreach (var property in Model.AvailableProperties)
         {
             <text>
-                                if (!selectedProperties.includes("@property.Name")) {
+                            if (!selectedProperties.includes("@property.Name")) {
                     var option = document.createElement("option");
                     option.value = "@property.Id";
                     option.text = "@property.Name";
+                    option.dataset.unit = "@property.Unit"; // Add this line
                     propertySelect.appendChild(option);
                     hasOptions = true;
                 }
@@ -87,20 +88,21 @@
             document.getElementById("addPropertyButton").style.display = hasOptions ? "inline-block" : "none";
         }
 
-        function createQuantityInput(selectElement, propertyInputDiv) {
+        function createAmountInput(selectElement, propertyInputDiv) {
             var selectedPropertyId = selectElement.value;
             var selectedPropertyName = selectElement.options[selectElement.selectedIndex].text;
+            var unit = selectElement.options[selectElement.selectedIndex].dataset.unit; // Get the unit
 
-            if (propertyInputDiv.querySelector(".quantity-input")) {
+            if (propertyInputDiv.querySelector(".Amount-input")) {
                 return;
             }
 
-            var quantityInput = document.createElement("input");
-            quantityInput.classList.add("quantity-input");
-            quantityInput.type = "number";
-            quantityInput.name = "Properties[" + selectedProperties.length + "].Quantity"; // Updated name attribute
-            quantityInput.placeholder = "Aantal";
-            quantityInput.dataset.propertyId = selectedPropertyId; // Store property ID for later use
+            var AmountInput = document.createElement("input");
+            AmountInput.classList.add("Amount-input");
+            AmountInput.type = "number";
+            AmountInput.name = "Properties[" + selectedProperties.length + "].Amount"; // Updated name attribute
+            AmountInput.placeholder = unit; // Set placeholder to unit
+            AmountInput.dataset.propertyId = selectedPropertyId; // Store property ID for later use
 
             var propertyIdInput = document.createElement("input");
             propertyIdInput.type = "hidden";
@@ -118,7 +120,7 @@
                 enablePropertyOption(selectedPropertyId);
             };
 
-            propertyInputDiv.appendChild(quantityInput);
+            propertyInputDiv.appendChild(AmountInput);
             propertyInputDiv.appendChild(propertyIdInput); // Append hidden input for property ID
             propertyInputDiv.appendChild(deleteButton);
 
