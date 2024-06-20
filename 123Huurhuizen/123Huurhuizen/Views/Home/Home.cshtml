@@ -126,19 +126,9 @@
             </div>
         </div>
     </div>
-
-    <!-- Voeg jQuery toe -->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <!-- Voeg Fancybox JavaScript toe -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
-    <script>
-        // Activeer Fancybox
-        $(document).ready(function () {
-            $('[data-fancybox="gallery"]').fancybox();
-
-            // Dynamically set the height of columns to match the container
-            var containerHeight = $('.container').outerHeight();
-            $('.col-heigth').height(containerHeight);
-        });
-    </script>
+    @section scripts{
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+        <script src="~/js/Home.js" asp-append-version="true"></script>
+    }
 </body>

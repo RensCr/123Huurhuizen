@@ -111,7 +111,7 @@ namespace Controllers
 
         private List<string> PhotoPublisher(List<IFormFile> photos)
         {
-            var publisher = new PhotoPublisher();
+            var publisher = new PhotoPublisherService();
             var photosLinks = new List<string>();
 
             foreach (var photo in photos)

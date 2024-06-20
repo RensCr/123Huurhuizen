@@ -1,6 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-    ﻿@using System.IdentityModel.Tokens.Jwt
+@using System.IdentityModel.Tokens.Jwt
 @{
     var jwttoken = Context.Request.Cookies["jwtToken"];
     var tokenHandler = new JwtSecurityTokenHandler();
@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="~/_123Huurhuizen.styles.css" asp-append-version="true" />
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    @RenderSection("styles", required: false)
 </head>
 <body>
     <header>
@@ -57,29 +58,22 @@
                     </div>
                 </div>
 
-
                 <a class="navbar-brand mx-auto" asp-controller="Home" asp-action="Index">
                     <img src="~/Images/logo.png" style="width: 80px; height: 50px;" alt="Logo" />
                 </a>
 
-
-
-
                 <!-- Knoppen rechts uitgelijnd -->
                 <div class="navbar-nav ml-0">
-                   <a asp-controller="Home" asp-action="Index" class=" btn">Huur huis </a>
+                    <a asp-controller="Home" asp-action="Index" class="btn">Huur huis </a>
                 </div>
                 <div class="navbar-nav">
                     <span class="navbar-text mx-2">|</span>
                 </div>
                 <div class="navbar-nav">
-                    <a asp-controller="Home" asp-action="AddHouse" class=" btn">Verhuur huis</a>
+                    <a asp-controller="Home" asp-action="AddHouse" class="btn">Verhuur huis</a>
                 </div>
             </div>
         </nav>
-
-
-
     </header>
     <div class="container">
         <main role="main" class="pb-3">
@@ -87,18 +81,21 @@
         </main>
     </div>
 
-
-
-    <footer class="border-top footer text-muted sticky-bottom fixed-bottom"style="background-color : white">
+    <footer class="border-top footer text-muted sticky-bottom fixed-bottom" style="background-color : white">
         <div class="container">
             &copy; 2024 - 123Huurhuizen - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
 
-
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+
+    @* Render the "scripts" section or ignore it *@
+    @if (IsSectionDefined("scripts"))
+    {
+        @RenderSection("scripts", required: false)
+    }
+
 </body>
 </html>

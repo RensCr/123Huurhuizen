@@ -12,10 +12,10 @@ namespace Logic.dtos
 
         }
 
-        public ChosenPropertiesDto(int id, int quantity, string? name)
+        public ChosenPropertiesDto(int id, int amount, string? name)
         {
             Id = id;
-            Amount = quantity;
+            Amount = amount;
             Name = name;
         }
     }
