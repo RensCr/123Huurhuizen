@@ -1,8 +1,65 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿
+@model HouseOverviewViewModel
+
+@{
+    ViewData["Title"] = "123Huurhuizen";
 }
 
+
+
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <div class="container">
+        <div class="row mb-4">
+            @foreach (var house in Model.Houses )       {
+                <div class="col-md-3">
+                    <div class="card bg-light">
+                        <img src="@house.HousePhotos.FirstOrDefault()?.PhotoLink" class="card-img-top" alt="House Photo" style="max-width: 300px; max-height: 200px;">
+                        <div class="card-body">
+                            <h4 class="card-title text-center">@house.RentPerMonth € per maand</h4>
+                            <h5 class="card-title text-center">Informatie</h5>
+                            <h6 class="card-text">Beschikbaar vanaf: @house.AvailableAt</h6>
+                            <p class="card-text font-weight-bold">@house.SortRenter</p>
+                            <hr />
+                            @if (house.SellerId == ViewBag.SellerId)
+                            {
+                                <!-- Bewerkknop toevoegen -->
+                                <a href="#" class="btn btn-secondary position-absolute top-0 start-0 m-2 editButton" data-house-id="@house.HouseId"><i class="fas fa-pencil-alt"></i></a>
+                                <button type="button" class="btn btn-danger position-absolute top-0 end-0 m-2 deleteButton" data-house-id="@house.HouseId"><i class="fas fa-trash"></i></button>
+                                <form class="editForm" style="display: none;">
+                                    <input type="hidden" name="houseId" value="@house.HouseId" />
+                                    <input type="text" name="rentPerMonth" value="@house.RentPerMonth" placeholder="Nieuwe huurprijs" />
+                                    <input type="date" name="availableAt" value="@house.AvailableAt" placeholder="Nieuwe beschikbaarheid" />
+                                    <!-- Opslaan-knop toevoegen -->
+                                    <br />
+                                    <button type="button" class="btn custom-btn btn-block saveButton">Opslaan</button>
+                                </form>
+                                <form asp-controller="Home" asp-action="Home" asp-route-id="@house.HouseId">
+                                    <button type="submit" class="btn custom-btn btn-block EigenhuisButton">Eigen huis</button>
+                                </form>
+
+                            }
+                            else
+                            {
+                                <form asp-controller="Home" asp-action="Home" asp-route-id="@house.HouseId">
+                                    <button type="submit" class="btn custom-btn btn-block">Meer informatie</button>
+                                </form>
+
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
 </div>
+@section Scripts{
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.0.18/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.0.18/sweetalert2.min.css">
+    <script src="~/js/HomeIndex.js" asp-append-version="true"></script>
+}
+
+
+
+

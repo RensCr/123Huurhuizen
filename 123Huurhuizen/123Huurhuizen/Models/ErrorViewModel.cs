@@ -1,4 +1,4 @@
-namespace _123Huurhuizen.Models
+namespace Models
 {
     public class ErrorViewModel
     {

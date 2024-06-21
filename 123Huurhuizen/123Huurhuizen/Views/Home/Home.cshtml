@@ -1,0 +1,134 @@
+﻿@model HouseInformationViewModel;
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vastgoed Lijst</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Voeg Fancybox CSS toe -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
+    <style>
+
+        .img-container {
+            height: 100%; /* Zorg ervoor dat de container 100% van de hoogte inneemt */
+        }
+
+            .img-container img {
+                height: 100%; /* Zorg ervoor dat de afbeelding 100% van de hoogte van de container inneemt */
+                width: auto;
+                object-fit: cover;
+            }
+
+        .img-fluid {
+            width: 100%; /* Make the image fill the container */
+            height: auto; /* Keep the aspect ratio */
+            object-fit: cover; /* Cover the area without stretching */
+        }
+
+        .col-md-5 {
+            min-width: 50%; /* Set the width to half of the parent toand '%(ProjectReference.ReferenceOutputAssembly)' == '' fit two images per row */
+        }
+
+        .navbar-nav ml-auto{
+
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container mt-5">
+        <!-- Fotogalerij -->
+        <div id="fotogalerij" class="row">
+            @{
+                int photoindex = 0;
+                bool isused = false;
+            }
+
+            @if (Model.Housenformation.HousePhotos.Any())
+            {
+                <div class="col-md-5">
+                    <div class="row">
+                        @foreach (var photo in Model.Housenformation.HousePhotos)
+                        {
+                            @if (photoindex == 0)
+                            {
+                                <div style="width:32.6em">
+                                    <a data-fancybox="gallery" href="@photo.PhotoLink">
+                                        <img src="@photo.PhotoLink" class="img-fluid">
+                                    </a>
+                                </div>
+                                photoindex++;
+                            }
+                            else if (photoindex < 5)
+                            {
+                                @if (photoindex == 1)
+                                {
+                                    @Html.Raw("</div></div><div class='col-md-5'><div class='row'>")
+                                }
+                                <div class="col-md-6">
+                                    <a data-fancybox="gallery" href="@photo.PhotoLink" >
+                                        <img src="@photo.PhotoLink" class="img-fluid">
+                                    </a>
+                                </div>
+                                photoindex++;
+                            }
+                            else
+                            {
+                                <a data-fancybox="gallery" href="@photo.PhotoLink">
+                                    
+                                </a>
+                            }
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+
+        <!-- Locatie en details -->
+        <div class="row mt-4">
+            <div class="col-md-8">
+                <div id="kaart">
+                    <!-- Voeg hier je kaartembed toe -->
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-box bg-light p-3">
+                <h3>@Model.Housenformation.Location</h3>
+                <p><strong>Huur:</strong> €@Model.Housenformation.PricePerMonth per maand</p>
+                <p><strong>Soort verhuurder</strong> @Model.Housenformation.SortRenter</p>
+                <p><strong>Naam verhuurder</strong> @Model.Housenformation.RenterName</p>
+                <p><strong>Beschikbaar vanaf:</strong> @Model.Housenformation.RentalStartTime.ToString("dd-MM-yyyy")</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informatie sectie -->
+        <div class="row mt-4">
+            <div class="col">
+                <div class="info-sectie bg-light p-3">
+                    <h4>Informatie</h4>
+                <p>@Model.Housenformation.HouseInformation</p>
+                @foreach (var property in Model.Housenformation.SelectedProperties)
+                {
+                    if (property.Amount < 2)
+                    {
+                        <p>Er is @property.Amount @property.Name</p>
+
+                    }
+                    else
+                    {
+                        <p>Er zijn @property.Amount @property.Name</p>
+                    }
+
+                }
+                </div>
+            </div>
+        </div>
+    </div>
+    @section scripts{
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+        <script src="~/js/Home.js" asp-append-version="true"></script>
+    }
+</body>

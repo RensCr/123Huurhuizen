@@ -1,0 +1,39 @@
+.password-toggle-icon {
+    cursor: pointer;
+    position: absolute;
+    Left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 100%;
+    width: 18%;
+}
+
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 4%;
+}
+
+    .form-container form {
+        width: 50%;
+        position: relative; /* Required for absolute positioning */
+    }
+
+    .form-container .form-control {
+        position: relative; /* Required for the icon positioning */
+    }
+.btn:focus,
+.btn:active {
+    box-shadow: none !important;
+}
+
+body {
+    overflow: hidden;
+}
+
+.container {
+    overflow-y: auto;
+    max-height: 100vh;
+}
+

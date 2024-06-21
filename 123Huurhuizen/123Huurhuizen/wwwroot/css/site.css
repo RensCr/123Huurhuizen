@@ -20,3 +20,29 @@ html {
 body {
   margin-bottom: 60px;
 }
+.card{
+    margin-top: 1em;
+}
+.custom-btn {
+    background-color: #000;
+    color: #fff;
+    border-radius: 25px; /* Pas deze waarde aan om de gewenste ovale/rechthoekige vorm te krijgen */
+    padding: 10px 20px; /* Pas de padding aan indien nodig */
+}
+
+    /* Optioneel: Hef de standaard Bootstrap-stijlen op */
+    .custom-btn:hover,
+    .custom-btn:focus {
+        background-color: #000;
+        color: #fff;
+        box-shadow: none;
+    }
+.font-weight-bold {
+    font-weight: 500; /* Pas deze waarde aan om de gewenste vetgedrukte stijl te krijgen */
+}
+.btn:focus,
+.btn:active {
+    box-shadow: none !important;
+}
+
+
