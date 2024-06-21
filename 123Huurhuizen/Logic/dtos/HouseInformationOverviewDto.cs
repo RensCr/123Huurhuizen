@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Logic.dtos
+﻿namespace Logic.dtos
 {
-    public class HouseInformationOverview
+    public class HouseInformationOverviewDto
     {
         public int HouseId { get; set; }
         public string Location { get; set; }
@@ -16,9 +10,9 @@ namespace Logic.dtos
         public string SortRenter { get; set; }
         public string RenterName { get; set; }
         public List<Photo> HousePhotos { get; set; }
-        public List<ChosenProperties> SelectedProperties { get; set; }
+        public List<ChosenPropertiesDto> SelectedProperties { get; set; }
 
-        public HouseInformationOverview(int houseId, string location, double pricePerMonth, string houseInformation, DateTime rentalStartTime, string sortRenter, string renterName, List<Photo> housePhotos, List<ChosenProperties> selectedProperties)
+        public HouseInformationOverviewDto(int houseId, string location, double pricePerMonth, string houseInformation, DateTime rentalStartTime, string sortRenter, string renterName, List<Photo> housePhotos, List<ChosenPropertiesDto> selectedProperties)
         {
             HouseId = houseId;
             Location = location;

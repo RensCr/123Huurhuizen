@@ -7,7 +7,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IUserRepository, Dal.UserRepository>();
 builder.Services.AddScoped<IHouseRepository, Dal.HouseRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IAccount, Account>();
+builder.Services.AddScoped<IAccount, AccountService>();
 builder.Services.AddScoped<IHouseService, HouseService>();
 
 var app = builder.Build();

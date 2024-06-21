@@ -14,7 +14,7 @@ namespace Dal
     public class HouseRepository : IHouseRepository
     {
         private string constring = "Server=127.0.0.1;Port=3306;Database=123huizen;Uid=root;";
-        public int AddHouse(HouseInformation house)
+        public int AddHouse(AddHouseInformationDto house)
         {
             MySqlConnection connection = new MySqlConnection(constring);
             try
@@ -59,9 +59,9 @@ namespace Dal
                 connection.Close();
             }
         }
-        public List<House> GetAllHouses()
+        public List<HouseDto> GetAllHouses()
         {
-            List<House> Houses = new List<House>();
+            List<HouseDto> Houses = new List<HouseDto>();
 
             MySqlConnection connection = new MySqlConnection(constring);
             try
@@ -84,7 +84,7 @@ namespace Dal
                             string sortSeller = reader["typeSeller"].ToString();
                             int houseId = Convert.ToInt32(reader["HouseId"]);
                             Photo.Add(new Photo(pictureId, PhotoLink));
-                            Houses.Add(new House(houseId, Photo, pricePerMonth, formattedStartDate, sortSeller, sellerId));
+                            Houses.Add(new HouseDto(houseId, Photo, pricePerMonth, formattedStartDate, sortSeller, sellerId));
                         }
                     }
                 }
@@ -154,9 +154,9 @@ namespace Dal
                 connection.Close();
             }
         }
-        public List<Properties> GetAvailableProperties()
+        public List<LoadPropertiesDto> GetAvailableProperties()
         {
-            List<Properties> properties = new List<Properties>();
+            List<LoadPropertiesDto> properties = new List<LoadPropertiesDto>();
 
             MySqlConnection connection = new MySqlConnection(constring);
             try
@@ -171,7 +171,8 @@ namespace Dal
                         {
                             int id = reader.GetInt32("id");
                             string name = reader.GetString("Name");
-                            properties.Add(new Properties(id, name));
+                            string unit = reader.GetString("Unit");
+                            properties.Add(new LoadPropertiesDto(id, name,unit));
                         }
                     }
                 }
@@ -187,7 +188,7 @@ namespace Dal
 
             return properties;
         }
-        public bool SetHouseProperties(int houseId, List<ChosenProperties> chosenProperties)
+        public bool SetHouseProperties(int houseId, List<ChosenPropertiesDto> chosenProperties)
         {
             MySqlConnection connection = new MySqlConnection(constring);
             try
@@ -195,7 +196,7 @@ namespace Dal
                 connection.Open();
                 foreach (var chosenProperty in chosenProperties)
                 {
-                    string addPropertyQuery = $"INSERT INTO house_properties (House_id , Property_id, Amount) VALUES('{houseId}','{chosenProperty.Id}','{chosenProperty.Quantity}')";
+                    string addPropertyQuery = $"INSERT INTO house_properties (House_id , Property_id, Amount) VALUES('{houseId}','{chosenProperty.Id}','{chosenProperty.Amount}')";
                     MySqlCommand command = new MySqlCommand(addPropertyQuery, connection);
                     command.ExecuteNonQuery();
                 }
@@ -210,10 +211,10 @@ namespace Dal
             }
             return true;
         }
-        public HouseInformationOverview GetHouseInformationOverview(int houseId)
+        public HouseInformationOverviewDto GetHouseInformationOverview(int houseId)
         {
             List<Photo> photos = new List<Photo>();
-            List<ChosenProperties> chosenProperties = new List<ChosenProperties>();
+            List<ChosenPropertiesDto> chosenProperties = new List<ChosenPropertiesDto>();
             MySqlConnection connection = new MySqlConnection(constring);
             int HouseId = 0;
             string Location = "";
@@ -272,7 +273,7 @@ namespace Dal
                         int propertyId = reader.GetInt32("property_id");
                         int amount = reader.GetInt32("amount");
                         string propertyName = reader.GetString("Name");
-                        chosenProperties.Add(new ChosenProperties(propertyId, amount, propertyName));
+                        chosenProperties.Add(new ChosenPropertiesDto(propertyId, amount, propertyName));
                     }
                 }
 
@@ -283,7 +284,7 @@ namespace Dal
             }
 
             // Return HouseInformationOverview gevuld met de opgehaalde gegevens
-            return new HouseInformationOverview(HouseId, Location, PricePerMonth, HouseInformation, RentalStartTime, SortRenter, RenterName, photos, chosenProperties);
+            return new HouseInformationOverviewDto(HouseId, Location, PricePerMonth, HouseInformation, RentalStartTime, SortRenter, RenterName, photos, chosenProperties);
         }
         public bool checkIfHouseExist(int houseId)
         {

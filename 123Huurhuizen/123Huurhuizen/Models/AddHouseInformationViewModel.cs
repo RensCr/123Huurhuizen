@@ -4,8 +4,8 @@ namespace Models
 {
     public class AddHouseInformationViewModel
     {
-        public List<Properties> AvailableProperties { get; set; }
-        public AddHouseInformationViewModel(List<Properties> availableProperties) 
+        public List<LoadPropertiesDto> AvailableProperties { get; set; }
+        public AddHouseInformationViewModel(List<LoadPropertiesDto> availableProperties) 
         {
             AvailableProperties = availableProperties;
         }

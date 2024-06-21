@@ -4,7 +4,7 @@ namespace Logic.interfaces
 {
     public interface IAccount
     {
-        bool AddAccount(User user);
+        bool AddAccount(UserDto user);
         string GetUserName(int userId);
         string HashPassword(string password);
         bool IsValidUser(string email, string hashedPassword, out int userId);

@@ -9,7 +9,7 @@ namespace Logic.interfaces
 {
     public interface IUserRepository
     {
-        public bool CreateAccount(User user);
+        public bool CreateAccount(UserDto user);
         public bool CheckIfUserExist(string name, string hashedPassword, out int userId);
         public string GetUserName(int id);
         public bool IsUserSeller(int id);

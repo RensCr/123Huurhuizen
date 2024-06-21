@@ -1,173 +1,45 @@
 ﻿@model AddHouseInformationViewModel
-<!DOCTYPE html>
-<html lang="en">
-<head>
+@section styles{
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.0.18/sweetalert2.min.css">
-</head>
-<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.0.18/sweetalert2.min.js"></script>
+}
+
+
+
     <h1>Voer gegevens in:</h1>
     <form enctype="multipart/form-data" asp-controller="Home" asp-action="AddHouse" onsubmit="return validateForm()">
-        <label for="location">Locatie:</label>
+        <label for="location">Locatie van het huis:</label>
         <input type="text" id="location" name="Location" required><br><br>
 
-        <label for="date">Datum:</label>
+        <label for="date">Vanaf wanneer wilt u beginnen met verhuren:</label>
         <input type="date" id="date" name="Date" required><br><br>
 
-        <label for="price">Prijs:</label>
-        <input type="number" id="price" name="Price" step="0.01" required><span>€</span><br><br>
+        <label for="price">Prijs per maand:</label>
+        <input type="number" id="price" name="Price" step="1" required><span>€</span><br><br>
 
         <label for="information">Aanvullende informatie:</label>
-        <textarea id="information" name="Information" rows="4" cols="50"></textarea><br><br>
+        <textarea id="information" name="Information" rows="4" cols="50" required></textarea><br><br>
 
-        <label for="photos">Foto uploaden:</label>
+        <label for="photos">huisfotos uploaden:</label>
         <div id="selectedFiles"></div><br><br>
-        <input type="file" id="photos" name="Photos" accept=".png, .jpg" multiple onchange="displaySelectedFile(this.files)">
+        <input type="file" id="photos" name="Photos" accept=".png, .jpg" required multiple onchange="displaySelectedFile(this.files)">
 
         <div id="selectedProperties">
             <span>Huiseigenschappen:</span>
             <button type="button" id="addPropertyButton" onclick="addPropertyInput()">+</button>
-        </div>
+        </div><br><br>
 
         <input type="submit" value="Verzenden">
     </form>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.0.18/sweetalert2.min.js"></script>
+@section scripts {
     <script>
-        var selectedProperties = [];
-
-        function addPropertyInput() {
-            var selectedPropertiesDiv = document.getElementById("selectedProperties");
-            var propertyInputDiv = document.createElement("div");
-            propertyInputDiv.classList.add("property-input");
-
-            var propertySelect = document.createElement("select");
-            propertySelect.classList.add("property-select");
-            propertySelect.onchange = function () {
-                createQuantityInput(this, propertyInputDiv);
-                this.disabled = true;
-            };
-
-            var defaultOption = document.createElement("option");
-            defaultOption.value = "";
-            defaultOption.text = "Selecteer een property";
-            defaultOption.disabled = true;
-            defaultOption.selected = true;
-            propertySelect.appendChild(defaultOption);
-
-            var hasOptions = false;
-        @foreach (var property in Model.AvailableProperties)
-        {
-            <text>
-                                if (!selectedProperties.includes("@property.Name")) {
-                    var option = document.createElement("option");
-                    option.value = "@property.Id";
-                    option.text = "@property.Name";
-                    propertySelect.appendChild(option);
-                    hasOptions = true;
-                }
-            </text>
-        }
-
-                    if (!hasOptions) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Alle beschikbare properties zijn gebruikt',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-                return;
-            }
-
-            propertyInputDiv.appendChild(propertySelect);
-            selectedPropertiesDiv.appendChild(propertyInputDiv);
-
-            document.getElementById("addPropertyButton").style.display = hasOptions ? "inline-block" : "none";
-        }
-
-        function createQuantityInput(selectElement, propertyInputDiv) {
-            var selectedPropertyId = selectElement.value;
-            var selectedPropertyName = selectElement.options[selectElement.selectedIndex].text;
-
-            if (propertyInputDiv.querySelector(".quantity-input")) {
-                return;
-            }
-
-            var quantityInput = document.createElement("input");
-            quantityInput.classList.add("quantity-input");
-            quantityInput.type = "number";
-            quantityInput.name = "Properties[" + selectedProperties.length + "].Quantity"; // Updated name attribute
-            quantityInput.placeholder = "Aantal";
-            quantityInput.dataset.propertyId = selectedPropertyId; // Store property ID for later use
-
-            var propertyIdInput = document.createElement("input");
-            propertyIdInput.type = "hidden";
-            propertyIdInput.name = "Properties[" + selectedProperties.length + "].Id"; // Updated name attribute
-            propertyIdInput.value = selectedPropertyId;
-
-            var deleteButton = document.createElement("button");
-            deleteButton.classList.add("delete-button");
-            deleteButton.textContent = "🗑️";
-            deleteButton.type = "button";
-            deleteButton.onclick = function () {
-                propertyInputDiv.remove();
-                selectedProperties = selectedProperties.filter(item => item !== selectedPropertyName);
-                document.getElementById("addPropertyButton").style.display = "inline-block";
-                enablePropertyOption(selectedPropertyId);
-            };
-
-            propertyInputDiv.appendChild(quantityInput);
-            propertyInputDiv.appendChild(propertyIdInput); // Append hidden input for property ID
-            propertyInputDiv.appendChild(deleteButton);
-
-            selectedProperties.push(selectedPropertyName);
-            disablePropertyOption(selectedPropertyId);
-
-            var allPropertiesUsed = selectedProperties.length === document.querySelectorAll('.property-select option').length - 1;
-            document.getElementById("addPropertyButton").style.display = allPropertiesUsed ? "none" : "inline-block";
-        }
-
-        function disablePropertyOption(propertyId) {
-            var allSelects = document.querySelectorAll('.property-select');
-            allSelects.forEach(select => {
-                var option = select.querySelector('option[value="' + propertyId + '"]');
-                if (option) {
-                    option.disabled = true;
-                }
-            });
-        }
-
-        function enablePropertyOption(propertyId) {
-            var allSelects = document.querySelectorAll('.property-select');
-            allSelects.forEach(select => {
-                var option = select.querySelector('option[value="' + propertyId + '"]');
-                if (option) {
-                    option.disabled = false;
-                }
-            });
-        }
-
-        function validateForm() {
-            var locationInput = document.getElementById("location").value;
-            if (locationInput.trim() === "") {
-                alert("Voer een locatie in.");
-                return false;
-            }
-            return true;
-        }
-
-        function displaySelectedFile(files) {
-            var selectedFilesDiv = document.getElementById("selectedFiles");
-            selectedFilesDiv.innerHTML = '';
-
-            for (var i = 0; i < files.length; i++) {
-                var fileElement = document.createElement("p");
-                fileElement.textContent = files[i].name;
-                selectedFilesDiv.appendChild(fileElement);
-            }
-        }
+        var availableProperties = @Html.Raw(Json.Serialize(Model.AvailableProperties));
     </script>
-</body>
-</html>
+    <script src="~/js/Addhouse.js" asp-append-version="true"></script>
+}
+
+

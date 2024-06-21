@@ -11,7 +11,7 @@ using Logic.dtos;
 
 namespace Logic
 {
-    public class PhotoPublisher
+    public class PhotoPublisherService
     {
         private string ClientId = "99e309afc41ca46";
         private string ClientSecret = "c717d66bd33daab56bdbe1d167857f938073bd30";

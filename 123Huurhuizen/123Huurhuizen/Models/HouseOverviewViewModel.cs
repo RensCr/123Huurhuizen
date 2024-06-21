@@ -4,9 +4,9 @@ namespace Models
 {
     public class HouseOverviewViewModel
     {
-        public List<House> Houses { get; set; }
+        public List<HouseDto> Houses { get; set; }
 
-        public HouseOverviewViewModel(List<House> houses)
+        public HouseOverviewViewModel(List<HouseDto> houses)
         {
             Houses = houses;
         }

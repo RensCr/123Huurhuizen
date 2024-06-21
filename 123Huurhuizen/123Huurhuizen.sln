@@ -5,9 +5,11 @@ VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "123Huurhuizen", "123Huurhuizen\123Huurhuizen.csproj", "{EAD17A83-1B11-49E1-B4A7-9F4EC3997079}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dal", "Dal\Dal.csproj", "{3FA3632E-E9F0-48AE-9395-866F1B43A3F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dal", "Dal\Dal.csproj", "{3FA3632E-E9F0-48AE-9395-866F1B43A3F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logic", "Logic\Logic.csproj", "{9E862BF4-ECD0-4021-BB36-5B4ABA7494A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logic", "Logic\Logic.csproj", "{9E862BF4-ECD0-4021-BB36-5B4ABA7494A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "UnitTest\UnitTest.csproj", "{99D89B45-13B8-495B-BB14-11E663DDA873}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{9E862BF4-ECD0-4021-BB36-5B4ABA7494A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E862BF4-ECD0-4021-BB36-5B4ABA7494A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E862BF4-ECD0-4021-BB36-5B4ABA7494A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99D89B45-13B8-495B-BB14-11E663DDA873}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99D89B45-13B8-495B-BB14-11E663DDA873}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99D89B45-13B8-495B-BB14-11E663DDA873}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99D89B45-13B8-495B-BB14-11E663DDA873}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

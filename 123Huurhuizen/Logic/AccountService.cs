@@ -5,10 +5,10 @@ using Logic.dtos;
 
 namespace Logic
 {
-    public class Account : IAccount
+    public class AccountService : IAccount
     {
         private readonly IUserRepository _userRepository;
-        public Account(IUserRepository userRepository)
+        public AccountService(IUserRepository userRepository)
         {
             this._userRepository = userRepository;
         }
@@ -27,7 +27,7 @@ namespace Logic
             return builder.ToString();
         }
 
-        public bool AddAccount(User user)
+        public bool AddAccount(UserDto user)
         {
             try
             {

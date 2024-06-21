@@ -28,7 +28,7 @@ namespace Controllers
 
         public IActionResult Index()
         {
-            List<House> houses = houseService.GetAllHouses();
+            List<HouseDto> houses = houseService.GetAllHouses();
             int SellerId = logincheck.GetSellerId(Request);
             ViewBag.SellerId = SellerId;
             return View(new HouseOverviewViewModel(houses));
@@ -58,7 +58,7 @@ namespace Controllers
             {
                 if (account.IsUserSeller(logincheck.GetSellerId(Request)))
                 {
-                    List<Properties> AvailableProperties = houseService.GetAvailableProperties();
+                    List<LoadPropertiesDto> AvailableProperties = houseService.GetAvailableProperties();
                     return View(new AddHouseInformationViewModel(AvailableProperties));
                 }
             }
@@ -98,9 +98,9 @@ namespace Controllers
             return Json(new { success = result });
         }
 
-        private HouseInformation CreateHouseInformation(AddHouseViewModel model)
+        private AddHouseInformationDto CreateHouseInformation(AddHouseViewModel model)
         {
-            return new HouseInformation(
+            return new AddHouseInformationDto(
                 logincheck.GetSellerId(Request),
                 model.Location,
                 model.Price,
@@ -111,7 +111,7 @@ namespace Controllers
 
         private List<string> PhotoPublisher(List<IFormFile> photos)
         {
-            var publisher = new PhotoPublisher();
+            var publisher = new PhotoPublisherService();
             var photosLinks = new List<string>();
 
             foreach (var photo in photos)

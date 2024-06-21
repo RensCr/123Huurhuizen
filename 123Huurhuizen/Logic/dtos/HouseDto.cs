@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Logic.dtos
 {
-    public class House
+    public class HouseDto
     {
         public int HouseId { get; set; }
         public List<Photo> HousePhotos { get; set; }
@@ -14,7 +14,7 @@ namespace Logic.dtos
         public string AvailableAt { get; set; }
         public string SortRenter { get; set; }
         public int SellerId { get; set; }
-        public House(int houseId, List<Photo> housePhotos, double rentPerMonth, string availableAt, string sortRenter, int sellerId)
+        public HouseDto(int houseId, List<Photo> housePhotos, double rentPerMonth, string availableAt, string sortRenter, int sellerId)
         {
             HouseId = houseId;
             HousePhotos = housePhotos;

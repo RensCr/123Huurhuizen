@@ -9,14 +9,14 @@ namespace Logic.interfaces
 {
     public interface IHouseRepository
     {
-        public int AddHouse(HouseInformation house);
+        public int AddHouse(AddHouseInformationDto house);
         public bool AddHousePictures(int HouseId, List<string> Photolinks);
-        public List<House> GetAllHouses();
+        public List<HouseDto> GetAllHouses();
         public bool DeleteHouse(int houseId);
         public bool UpdateHouse(UpdateHouseDto updateHouseDto);
-        public List<Properties> GetAvailableProperties();
-        public bool SetHouseProperties(int houseId, List<ChosenProperties> chosenProperties);
-        public HouseInformationOverview GetHouseInformationOverview(int houseId);
+        public List<LoadPropertiesDto> GetAvailableProperties();
+        public bool SetHouseProperties(int houseId, List<ChosenPropertiesDto> chosenProperties);
+        public HouseInformationOverviewDto GetHouseInformationOverview(int houseId);
         public bool checkIfHouseExist(int houseId);
     }
 }
