@@ -8,21 +8,30 @@ using System.Threading.Tasks;
 
 namespace UnitTest.Mockdata
 {
-    public class MockAccountService : IAccount
+    public class MockDataUserRepository : IUserRepository
     {
-        public bool AddAccount(UserDto user)
+        public bool CheckIfUserExist(string name, string hashedPassword, out int userId)
+        {
+            if(name == "test" && hashedPassword == "test")
+            {
+                userId = 1;
+                return true;
+            }
+            else
+            {
+                userId = -1;
+                return false;
+            }
+        }
+
+        public bool CreateAccount(UserDto user)
         {
             throw new NotImplementedException();
         }
 
-        public string GetUserName(int userId)
+        public string GetUserName(int id)
         {
-            throw new NotImplementedException();
-        }
-
-        public string HashPassword(string password)
-        {
-            if(password == "test")
+            if(id == 1)
             {
                 return "test";
             }
@@ -33,11 +42,6 @@ namespace UnitTest.Mockdata
         }
 
         public bool IsUserSeller(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsValidUser(string email, string hashedPassword, out int userId)
         {
             throw new NotImplementedException();
         }
