@@ -153,7 +153,6 @@ function displaySelectedFile(files) {
     }
 }
 
-// Bind de functies aan de elementen
 document.getElementById("addPropertyButton").onclick = addPropertyInput;
 document.getElementById("photos").onchange = function () {
     displaySelectedFile(this.files);
